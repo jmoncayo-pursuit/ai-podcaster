@@ -51,4 +51,3 @@ After running the CLI, your audio will be saved as `output.mp3`.
 ## Reference
 
 - [Speechify API Docs](https://docs.speechify.com/)
-- Inspired by [mvp-ai-podcasts](https://github.com/SpeechifyInc/mvp-ai-podcasts.git)

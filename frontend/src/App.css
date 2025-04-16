@@ -1,0 +1,71 @@
+/* Minimal responsive and accessible styles */
+.container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: system-ui, sans-serif;
+}
+h1 {
+  text-align: center;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+textarea {
+  width: 100%;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  resize: vertical;
+}
+.actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+button[type='submit'] {
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: none;
+  background: #0078d4;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+button[disabled],
+button[aria-busy='true'] {
+  background: #aaa;
+  cursor: not-allowed;
+}
+.result {
+  margin-top: 2rem;
+  text-align: center;
+}
+.error {
+  color: #b00;
+  margin-top: 1rem;
+  text-align: center;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+@media (max-width: 600px) {
+  .container {
+    padding: 0.5rem;
+  }
+  .actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

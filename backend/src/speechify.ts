@@ -19,16 +19,32 @@ function chunkText(text: string, limit: number): string[] {
   return chunks;
 }
 
+export interface TTSOptions {
+  input: string;
+  voiceId?: string;
+  audioFormat?: 'mp3' | 'wav';
+}
+
+export interface TTSGenerator {
+  convertTextToSpeech(
+    text: string,
+    options?: TTSOptions
+  ): Promise<Buffer>;
+}
+
 export async function convertTextToSpeech(
-  text: string
+  text: string,
+  options?: TTSOptions
 ): Promise<Buffer> {
+  const voiceId = options?.voiceId || 'george';
+  const audioFormat = options?.audioFormat || 'mp3';
   const chunks = chunkText(text, CHAR_LIMIT);
   const audioBuffers: Buffer[] = [];
   for (const chunk of chunks) {
     const response = await speechify.audioGenerate({
       input: chunk,
-      voiceId: 'george', // Use a standard English voice; replace with desired voiceId
-      audioFormat: 'mp3',
+      voiceId,
+      audioFormat,
     });
     const arrayBuffer = await response.audioData.arrayBuffer();
     audioBuffers.push(Buffer.from(arrayBuffer));
