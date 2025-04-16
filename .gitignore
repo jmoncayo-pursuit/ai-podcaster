@@ -1,0 +1,16 @@
+# Node
+node_modules/
+dist/
+
+# Env
+.env
+
+# Logs
+*.log
+
+# MacOS
+.DS_Store
+
+# Sample/Test Files
+input.txt
+output.mp3
