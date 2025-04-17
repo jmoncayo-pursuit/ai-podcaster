@@ -16,10 +16,12 @@ import {
 } from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
+import FemaleIcon from '@mui/icons-material/Female';
+import MaleIcon from '@mui/icons-material/Male';
 import Icon192 from './assets/icon assets/android-chrome-192x192.png';
 
 const VOICES = [
-  { id: 'monica', label: 'Monica (Default)', gender: 'female' },
+  { id: 'monica', label: 'Monica', gender: 'female' },
   { id: 'bwyneth', label: 'Bwyneth', gender: 'female' },
   { id: 'carly', label: 'Carly', gender: 'female' },
   { id: 'kristy', label: 'Kristy', gender: 'female' },
@@ -141,13 +143,37 @@ const FORMATS = [
 
 function App() {
   const [script, setScript] = useState('');
-  const [voiceId, setVoiceId] = useState('monica');
+  const [voiceId, setVoiceId] = useState(() => {
+    // Default to 'monica' (female), but if not in filteredVoices, pick first available
+    return (
+      VOICES.find((v) => v.gender === 'female')?.id || VOICES[0].id
+    );
+  });
   const [audioFormat, setAudioFormat] = useState('mp3');
   const [status, setStatus] = useState<
     'idle' | 'loading' | 'done' | 'error'
   >('idle');
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [gender, setGender] = useState<'all' | 'female' | 'male'>(
+    'all'
+  );
   const fileInput = useRef<HTMLInputElement>(null);
+
+  const filteredVoices =
+    gender === 'all'
+      ? VOICES
+      : VOICES.filter((v) => v.gender === gender);
+
+  React.useEffect(() => {
+    // When gender changes, if the current voiceId is not in filteredVoices, set to first available
+    if (
+      !filteredVoices.find((v) => v.id === voiceId) &&
+      filteredVoices.length > 0
+    ) {
+      setVoiceId(filteredVoices[0].id);
+    }
+    // eslint-disable-next-line
+  }, [gender, filteredVoices, voiceId]);
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -256,18 +282,111 @@ function App() {
               },
             }}
           />
-          <Grid
-            container
-            spacing={2}
-            alignItems='center'
-            columns={12}
-          >
-            <Grid span={4}>
+          <Box mb={2}>
+            <Box
+              sx={{
+                mb: 1,
+                display: 'flex',
+                justifyContent: 'center',
+                gap: 1,
+              }}
+            >
+              <Button
+                variant={gender === 'all' ? 'contained' : 'outlined'}
+                size='small'
+                sx={{
+                  borderRadius: 4,
+                  minWidth: 0,
+                  px: 2,
+                  bgcolor: gender === 'all' ? '#6C47FF' : undefined,
+                }}
+                onClick={() => setGender('all')}
+              >
+                All
+              </Button>
+              <Button
+                variant={
+                  gender === 'female' ? 'contained' : 'outlined'
+                }
+                size='small'
+                sx={{
+                  borderRadius: 4,
+                  minWidth: 0,
+                  px: 2,
+                  bgcolor:
+                    gender === 'female' ? '#6C47FF' : undefined,
+                }}
+                onClick={() => setGender('female')}
+                title='Female'
+              >
+                <FemaleIcon
+                  sx={{ verticalAlign: 'middle', mr: 0.5 }}
+                />
+              </Button>
+              <Button
+                variant={gender === 'male' ? 'contained' : 'outlined'}
+                size='small'
+                sx={{
+                  borderRadius: 4,
+                  minWidth: 0,
+                  px: 2,
+                  bgcolor: gender === 'male' ? '#6C47FF' : undefined,
+                }}
+                onClick={() => setGender('male')}
+                title='Male'
+              >
+                <MaleIcon sx={{ verticalAlign: 'middle', mr: 0.5 }} />
+              </Button>
+            </Box>
+            <FormControl fullWidth>
+              <InputLabel
+                id='voice-select-label'
+                sx={{
+                  color: '#F3F4F6',
+                  background: '#23262F',
+                  px: 0.5,
+                }}
+              >
+                Voice
+              </InputLabel>
+              <Select
+                labelId='voice-select-label'
+                id='voice-select'
+                value={
+                  filteredVoices.find((v) => v.id === voiceId)
+                    ? voiceId
+                    : filteredVoices[0]?.id || ''
+                }
+                label='Voice'
+                onChange={(e) => setVoiceId(e.target.value)}
+                aria-label='Select voice for podcast audio'
+                sx={{
+                  color: '#F3F4F6',
+                  background: '#181A20',
+                  borderRadius: 6,
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: { bgcolor: '#23262F', color: '#F3F4F6' },
+                  },
+                }}
+              >
+                {filteredVoices.map((v) => (
+                  <MenuItem key={v.id} value={v.id}>
+                    {v.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+          <Grid container spacing={2} alignItems='center'>
+            <Grid sx={{ flex: 1, minWidth: 0 }}>
               <Button
                 variant='outlined'
                 component='label'
                 startIcon={<UploadFileIcon />}
-                aria-label='Upload podcast script file'
+                aria-label='Upload podcast script file (PDF, DOC, DOCX, TXT)'
+                title='Supports PDF, DOC, DOCX, and TXT files'
                 sx={{
                   color: '#F3F4F6',
                   borderColor: '#6C47FF',
@@ -279,52 +398,25 @@ function App() {
                 Upload File
                 <input
                   type='file'
-                  accept='.txt,.md'
+                  accept='.txt,.pdf,.doc,.docx'
                   hidden
                   ref={fileInput}
                   onChange={handleFile}
                 />
               </Button>
+              <Typography
+                variant='caption'
+                sx={{
+                  color: '#b0b3b8',
+                  mt: 0.5,
+                  display: 'block',
+                  textAlign: 'center',
+                }}
+              >
+                Supports PDF, DOC, DOCX, and TXT files
+              </Typography>
             </Grid>
-            <Grid span={4}>
-              <FormControl fullWidth>
-                <InputLabel
-                  id='voice-select-label'
-                  sx={{
-                    color: '#F3F4F6',
-                    background: '#23262F',
-                    px: 0.5,
-                  }}
-                >
-                  Voice
-                </InputLabel>
-                <Select
-                  labelId='voice-select-label'
-                  id='voice-select'
-                  value={voiceId}
-                  label='Voice'
-                  onChange={(e) => setVoiceId(e.target.value)}
-                  aria-label='Select voice for podcast audio'
-                  sx={{
-                    color: '#F3F4F6',
-                    background: '#181A20',
-                    borderRadius: 6,
-                  }}
-                  MenuProps={{
-                    PaperProps: {
-                      sx: { bgcolor: '#23262F', color: '#F3F4F6' },
-                    },
-                  }}
-                >
-                  {VOICES.map((v) => (
-                    <MenuItem key={v.id} value={v.id}>
-                      {v.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid span={4}>
+            <Grid sx={{ flex: 1, minWidth: 0 }}>
               <FormControl fullWidth>
                 <InputLabel
                   id='format-select-label'
