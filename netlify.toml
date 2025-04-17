@@ -7,17 +7,17 @@
   targetPort = 5173
   framework = "vite"
 
-[redirects]
-  # SPA fallback
-  [[redirects]]
-    from = "/api/*"
-    to = "http://localhost:3001/api/:splat"
-    status = 200
-    force = true
-  [[redirects]]
-    from = "/*"
-    to = "/index.html"
-    status = 200
+# SPA fallback and API proxy
+[[redirects]]
+  from = "/api/*"
+  to = "http://localhost:3001/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
 
 [context.production.environment]
   # Add frontend env vars here if needed
