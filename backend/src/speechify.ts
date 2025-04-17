@@ -19,9 +19,11 @@ function chunkText(text: string, limit: number): string[] {
   return chunks;
 }
 
+export type VoiceId = 'george' | 'rob' | 'monica';
+
 export interface TTSOptions {
   input: string;
-  voiceId?: string;
+  voiceId?: VoiceId;
   audioFormat?: 'mp3' | 'wav';
 }
 
@@ -36,7 +38,7 @@ export async function convertTextToSpeech(
   text: string,
   options?: TTSOptions
 ): Promise<Buffer> {
-  const voiceId = options?.voiceId || 'george';
+  const voiceId: VoiceId = options?.voiceId || 'monica';
   const audioFormat = options?.audioFormat || 'mp3';
   const chunks = chunkText(text, CHAR_LIMIT);
   const audioBuffers: Buffer[] = [];
