@@ -7,7 +7,6 @@
   targetPort = 5173
   framework = "vite"
 
-# SPA fallback and API proxy
 [[redirects]]
   from = "/api/*"
   to = "http://localhost:3001/api/:splat"
