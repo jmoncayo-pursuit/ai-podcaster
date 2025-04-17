@@ -1,12 +1,24 @@
 # AI Podcaster: Speechify-powered TTS Podcast Generator
 
+A modern, accessible podcast generator that converts scripts to audio using the Speechify API. Features a React + MUI frontend and a TypeScript/Express backend.
+
+Website: https://github.com/your-org/ai-podcaster
+
+Topics: text-to-speech podcast react typescript express mui speechify accessibility
+
 ## Features
 
-- Converts text/markdown podcast scripts to mp3 audio using Speechify API
+- Converts text/markdown podcast scripts to mp3 or wav audio using Speechify API
 - Multiple voice and format options
 - Modern, accessible, and responsive React frontend (Vite + MUI)
 - REST API backend (Express + TypeScript)
 - CLI/script for easy use
+
+## Technologies Used
+
+- **Frontend:** React 19, TypeScript, Vite, Material UI (MUI v7), Emotion, MUI Icons
+- **Backend:** Node.js, Express, TypeScript, Speechify API SDK
+- **Other:** dotenv for environment variables, CORS, FileReader API
 
 ## Setup
 
@@ -16,11 +28,20 @@
    cd backend && npm install
    cd ../frontend && npm install
    ```
-3. Copy `.env.example` to `.env` at the project root and add your Speechify API key:
-   ```sh
-   cp .env.example .env
-   # Edit .env and set SPEECHIFY_API_KEY
-   ```
+3. Create a `.env` file in both the backend and frontend folders:
+   - For the backend, copy `.env.example` to `.env` and set your Speechify API key and backend host/port:
+     ```env
+     SPEECHIFY_API_KEY=your_key_here
+     BACKEND_HOST=localhost
+     BACKEND_PORT=3001
+     ```
+   - For the frontend, create a `.env` file and set the backend and frontend hosts/ports:
+     ```env
+     VITE_API_HOST=localhost
+     VITE_API_PORT=3001
+     VITE_FRONTEND_HOST=localhost
+     VITE_FRONTEND_PORT=5173
+     ```
 
 ## Usage
 
@@ -51,13 +72,22 @@ cd frontend
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+Open [http://localhost:5173](http://localhost:5173) in your browser (or the port you set in `.env`).
 
 ## Environment Variables
 
-- `.env` at the project root should contain:
-  ```
+- `.env` in the backend should contain:
+  ```env
   SPEECHIFY_API_KEY=your_key_here
+  BACKEND_HOST=localhost
+  BACKEND_PORT=3001
+  ```
+- `.env` in the frontend should contain:
+  ```env
+  VITE_API_HOST=localhost
+  VITE_API_PORT=3001
+  VITE_FRONTEND_HOST=localhost
+  VITE_FRONTEND_PORT=5173
   ```
 
 ## Notes
