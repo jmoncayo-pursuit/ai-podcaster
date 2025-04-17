@@ -23,4 +23,4 @@
   # Add frontend env vars here if needed
 
 [site]
-  name = "speechify-ai-podcaster"
+  name = "ai-podcaster-speechify"
