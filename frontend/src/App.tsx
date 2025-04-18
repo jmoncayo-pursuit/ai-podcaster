@@ -264,7 +264,9 @@ function App() {
             Single Speaker
           </Button>
           <Button
-            variant={mode === 'conversation' ? 'contained' : 'outlined'}
+            variant={
+              mode === 'conversation' ? 'contained' : 'outlined'
+            }
             onClick={() => setMode('conversation')}
           >
             Conversation Builder
