@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
 
 :root {
-  font-family: 'Roboto', system-ui, Avenir, Helvetica, Arial,
-    sans-serif;
+  font-family: 'Poppins', 'Roboto', system-ui, Avenir, Helvetica,
+    Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -27,7 +28,7 @@ a:hover {
 
 body {
   margin: 0;
-  font-family: 'Roboto', system-ui, Arial, sans-serif;
+  font-family: 'Poppins', 'Roboto', system-ui, Arial, sans-serif;
   background: #181a20;
   color: #f3f4f6;
   cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 0 24 24" fill="%236C47FF"><path d="M12 15q-1.25 0-2.125-.875T9 12V7q0-1.25.875-2.125T12 4q1.25 0 2.125.875T15 7v5q0 1.25-.875 2.125T12 15Zm-1-8v5q0 .425.288.713Q11.575 13 12 13t.713-.287Q13 12.425 13 12V7q0-.425-.287-.713Q12.425 6 12 6t-.712.287Q11 6.575 11 7Zm1 13q-2.075 0-3.537-1.463Q7 17.075 7 15.05h2q0 1.025.713 1.738Q10.425 17.5 11.45 17.5q1.025 0 1.738-.712Q14 16.075 14 15.05h2q0 2.025-1.463 3.487Q15.075 20 13 20Zm-7-7v-2h2v2Zm14 0v-2h2v2Z"/></svg>')
@@ -39,6 +40,7 @@ h1 {
   font-size: 2.5em;
   line-height: 1.1;
   color: #f3f4f6;
+  font-family: 'Poppins', 'Roboto', system-ui, Arial, sans-serif;
 }
 
 button {
@@ -89,6 +91,7 @@ textarea:focus {
   background: #23262f;
   border-radius: 12px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  font-family: 'Poppins', 'Roboto', system-ui, sans-serif;
 }
 
 .actions {
