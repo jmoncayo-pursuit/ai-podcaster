@@ -88,6 +88,45 @@ To test the podcast-style conversation feature (alternating voices, audio stitch
 
 3. Play `output.mp3` to verify the conversation and distinct voices.
 
+## Conversation Builder (Multi-Speaker Podcast)
+
+The Conversation Builder lets you create a podcast-style conversation with multiple speakers and voices. You can:
+
+- Add as many turns as you want
+- Assign a name and a distinct voice to each turn
+- Enter the text for each speaker
+- Generate a single audio file with all turns stitched together
+
+### How to Use
+
+1. Start both backend and frontend:
+   ```sh
+   cd backend && npm run dev
+   cd ../frontend && npm run dev
+   ```
+2. Open the app in your browser (http://localhost:5173).
+3. Click "Conversation Builder" at the top of the UI.
+4. Add turns, select voices, and enter text for each speaker.
+5. Click "Generate Conversation Audio" to get a single audio file with all turns.
+6. Play or download the result.
+
+### API Usage
+
+You can also POST to `/api/conversation` with a JSON array of turns. See below for a sample curl command:
+
+```sh
+curl -X POST http://localhost:3001/api/conversation \
+  -H "Content-Type: application/json" \
+  --output conversation.mp3 \
+  -d '{
+    "conversation": [
+      { "speaker": "Lisa", "text": "Hi George, how are you today?", "voiceId": "lisa" },
+      { "speaker": "George", "text": "Hello Lisa! I am doing well, thank you. How about you?", "voiceId": "george" }
+    ],
+    "audioFormat": "mp3"
+  }'
+```
+
 ## Environment Variables
 
 - `.env` in the backend should contain:
