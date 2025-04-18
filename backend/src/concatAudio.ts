@@ -8,13 +8,23 @@ import fs from 'fs';
  * @param outputFile Output file path (should end with .mp3 or .wav)
  * @returns Promise that resolves when concatenation is complete
  */
-export function concatAudioFiles(inputFiles: string[], outputFile: string): Promise<void> {
+export function concatAudioFiles(
+  inputFiles: string[],
+  outputFile: string
+): Promise<void> {
   return new Promise((resolve, reject) => {
     if (inputFiles.length < 2) {
-      return reject(new Error('Need at least two files to concatenate.'));
+      return reject(
+        new Error('Need at least two files to concatenate.')
+      );
     }
-    const fileList = inputFiles.map(f => `file '${path.resolve(f)}'`).join('\n');
-    const tmpListPath = path.join(path.dirname(outputFile), 'ffmpeg_concat_list.txt');
+    const fileList = inputFiles
+      .map((f) => `file '${path.resolve(f)}'`)
+      .join('\n');
+    const tmpListPath = path.join(
+      path.dirname(outputFile),
+      'ffmpeg_concat_list.txt'
+    );
     fs.writeFileSync(tmpListPath, fileList);
 
     ffmpeg()
