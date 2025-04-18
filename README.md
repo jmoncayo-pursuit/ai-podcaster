@@ -74,6 +74,20 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173) in your browser (or the port you set in `.env`).
 
+## Podcast Conversation Workflow (using Lisa & George Voices from Speechify)
+
+To test the podcast-style conversation feature (alternating voices, audio stitching):
+
+1. From the backend directory, run:
+
+   ```sh
+   npx ts-node src/conversationWorkflow.ts
+   ```
+
+2. This will generate `output.mp3` in the backend folder, with Lisa and George as the speakers.
+
+3. Play `output.mp3` to verify the conversation and distinct voices.
+
 ## Environment Variables
 
 - `.env` in the backend should contain:

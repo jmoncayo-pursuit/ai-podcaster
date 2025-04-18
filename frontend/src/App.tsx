@@ -141,6 +141,10 @@ const FORMATS = [
   { id: 'wav', label: 'WAV' },
 ];
 
+const apiHost = import.meta.env.VITE_API_HOST || 'localhost';
+const apiPort = import.meta.env.VITE_API_PORT || '3001';
+const apiUrl = `http://${apiHost}:${apiPort}/api/tts`;
+
 function App() {
   const [script, setScript] = useState('');
   const [voiceId, setVoiceId] = useState(() => {
@@ -189,7 +193,7 @@ function App() {
     setStatus('loading');
     setAudioUrl(null);
     try {
-      const res = await fetch('http://localhost:3001/api/tts', {
+      const res = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: script, voiceId, audioFormat }),
