@@ -2,7 +2,7 @@
 
 A modern, accessible podcast generator that converts scripts to audio using the Speechify API. Features a React + MUI frontend and a TypeScript/Express backend.
 
-Website: https://github.com/your-org/ai-podcaster
+Website: https://ai-podcaster-speechify.netlify.app/
 
 Topics: text-to-speech podcast react typescript express mui speechify accessibility
 
