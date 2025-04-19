@@ -59,13 +59,19 @@ const ConversationBuilder: React.FC<ConversationBuilderProps> = ({
   useEffect(() => {
     if (initialTurns && initialTurns.length > 0) {
       const validatedTurns = initialTurns.map((turn) => {
-        const match = voices.find(
-          (v) => v.label.toLowerCase() === turn.speaker.toLowerCase()
+        // Use the provided voiceId if it's valid, otherwise try to match by speaker name
+        const validVoice = voices.find((v) => v.id === turn.voiceId);
+        const fallbackVoice = voices.find(
+          (v) => v.label.toLowerCase() === turn.speaker.trim().toLowerCase()
         );
         return {
           speaker: turn.speaker || '',
           text: turn.text || '',
-          voiceId: match?.id || voices[0]?.id || '',
+          voiceId:
+            validVoice?.id ||
+            fallbackVoice?.id ||
+            voices[0]?.id ||
+            '',
           emotion: turn.emotion || '',
         };
       });

@@ -29,6 +29,7 @@ interface ConversationTurn {
   speaker: string;
   text: string;
   voiceId: string;
+  emotion?: string;
 }
 
 const FORMATS = [
@@ -337,6 +338,28 @@ function App() {
                         }}
                       >
                         <b>{turn.speaker}:</b> {turn.text}
+                        {turn.voiceId && (
+                          <span
+                            style={{
+                              color: '#6C47FF',
+                              marginLeft: 8,
+                              fontSize: '0.95em',
+                            }}
+                          >
+                            [{turn.voiceId}]
+                          </span>
+                        )}
+                        {turn.emotion && turn.emotion !== 'None' && (
+                          <span
+                            style={{
+                              color: '#41D1FF',
+                              marginLeft: 8,
+                              fontSize: '0.95em',
+                            }}
+                          >
+                            ({turn.emotion})
+                          </span>
+                        )}
                       </Box>
                     ))}
                   </Box>
@@ -670,7 +693,14 @@ function App() {
               voices={VOICES}
               apiUrl={conversationApiUrl}
               initialTurns={
-                aiConversation.length > 0 ? aiConversation : undefined
+                aiConversation.length > 0
+                  ? aiConversation.map((turn) => ({
+                      speaker: turn.speaker,
+                      text: turn.text,
+                      voiceId: turn.voiceId,
+                      emotion: turn.emotion || '',
+                    }))
+                  : undefined
               }
             />
           )}

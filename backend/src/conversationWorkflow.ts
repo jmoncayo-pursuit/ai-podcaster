@@ -22,6 +22,44 @@ interface Voice {
 const validVoiceIds = new Set(VOICES.map((v: Voice) => v.id)); // Add type annotation for 'v'
 const DEFAULT_VOICE_ID: VoiceId = 'lisa';
 
+// Map each unique speaker to a unique, valid voiceId
+function assignUniqueVoices(
+  conversation: ConversationTurn[]
+): ConversationTurn[] {
+  // Get all available voice IDs
+  const availableVoiceIds = VOICES.map((v: Voice) => v.id);
+  const speakerToVoice: Record<string, string> = {};
+  let voiceIdx = 0;
+
+  for (const turn of conversation) {
+    const speaker = turn.speaker?.trim() || 'Unknown Speaker';
+    if (!speakerToVoice[speaker]) {
+      // Find the next unused voiceId
+      while (
+        voiceIdx < availableVoiceIds.length &&
+        Object.values(speakerToVoice).includes(
+          availableVoiceIds[voiceIdx]
+        )
+      ) {
+        voiceIdx++;
+      }
+      // Assign a voiceId, fallback to default if out of voices
+      speakerToVoice[speaker] =
+        availableVoiceIds[voiceIdx] || DEFAULT_VOICE_ID;
+      voiceIdx++;
+    }
+  }
+
+  // Return a new conversation array with updated voiceIds
+  return conversation.map((turn) => ({
+    ...turn,
+    voiceId: validVoiceIds.has(turn.voiceId)
+      ? turn.voiceId
+      : speakerToVoice[turn.speaker?.trim() || ''] ||
+        DEFAULT_VOICE_ID,
+  }));
+}
+
 /**
  * Generates a podcast-style conversation audio file from turns
  *
@@ -35,11 +73,13 @@ export async function generateConversationPodcast(
   outputFile: string,
   audioFormat: 'mp3' | 'wav' = 'mp3'
 ): Promise<void> {
+  // Ensure each speaker is mapped to a unique, valid voiceId
+  const updatedConversation = assignUniqueVoices(conversation);
   const audioFiles: string[] = [];
 
   try {
-    for (let i = 0; i < conversation.length; i++) {
-      const turn = conversation[i];
+    for (let i = 0; i < updatedConversation.length; i++) {
+      const turn = updatedConversation[i];
       const tempFile = path.join(
         __dirname,
         `temp_audio_${i}.${audioFormat}`
