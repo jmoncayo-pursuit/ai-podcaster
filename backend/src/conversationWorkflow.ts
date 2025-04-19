@@ -55,12 +55,13 @@ export async function generateConversationPodcast(
         );
       }
 
-      // Prepare text with emotion SSML if emotion is set
+      // Prepare text with emotion SSML if emotion is set and not 'None'
       let textToSynthesize = turn.text;
       if (
         turn.emotion &&
         typeof turn.emotion === 'string' &&
-        turn.emotion.trim()
+        turn.emotion.trim() &&
+        turn.emotion !== 'None'
       ) {
         textToSynthesize = `<speak><speechify:style emotion="${turn.emotion}">${turn.text}</speechify:style></speak>`;
       }
