@@ -97,13 +97,18 @@ export async function generateConversationPodcast(
 
       // Prepare text with emotion SSML if emotion is set and not 'None'
       let textToSynthesize = turn.text;
+      // Replace *word* with <emphasis>word</emphasis> for TTS emphasis
+      textToSynthesize = textToSynthesize.replace(
+        /\*([^*]+)\*/g,
+        '<emphasis>$1</emphasis>'
+      );
       if (
         turn.emotion &&
         typeof turn.emotion === 'string' &&
         turn.emotion.trim() &&
         turn.emotion !== 'None'
       ) {
-        textToSynthesize = `<speak><speechify:style emotion="${turn.emotion}">${turn.text}</speechify:style></speak>`;
+        textToSynthesize = `<speak><speechify:style emotion="${turn.emotion}">${textToSynthesize}</speechify:style></speak>`;
       }
 
       // Prepare options for convertTextToSpeech, excluding the 'input' property
