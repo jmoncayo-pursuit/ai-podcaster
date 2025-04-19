@@ -35,10 +35,16 @@ const FORMATS = [
   { id: 'wav', label: 'WAV' },
 ];
 
+// API base URL logic using environment variables
 const apiHost = import.meta.env.VITE_API_HOST || 'localhost';
 const apiPort = import.meta.env.VITE_API_PORT || '3001';
-const apiUrl = `http://${apiHost}:${apiPort}/api/tts`;
-const conversationApiUrl = `http://${apiHost}:${apiPort}/api/conversation`;
+const apiBase =
+  apiPort === '443'
+    ? `https://${apiHost}`
+    : `http://${apiHost}:${apiPort}`;
+const apiUrl = `${apiBase}/api/tts`;
+const conversationApiUrl = `${apiBase}/api/conversation`;
+const aiConversationApiUrl = `${apiBase}/api/ai-conversation`;
 
 const darkTheme = createTheme({
   palette: {
@@ -330,21 +336,18 @@ function App() {
                     setAiError(null);
                     setAiConversation([]);
                     try {
-                      const res = await fetch(
-                        `http://${apiHost}:${apiPort}/api/ai-conversation`,
-                        {
-                          method: 'POST',
-                          headers: {
-                            'Content-Type': 'application/json',
-                          },
-                          body: JSON.stringify({
-                            input: aiInput,
-                            turns: aiTurns,
-                            speakers: aiSpeakers,
-                            length: aiLength,
-                          }),
-                        }
-                      );
+                      const res = await fetch(aiConversationApiUrl, {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          input: aiInput,
+                          turns: aiTurns,
+                          speakers: aiSpeakers,
+                          length: aiLength,
+                        }),
+                      });
                       if (!res.ok) {
                         const err = await res
                           .json()
