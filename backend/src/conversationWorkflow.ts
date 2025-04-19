@@ -80,6 +80,10 @@ export async function generateConversationPodcast(
   try {
     for (let i = 0; i < updatedConversation.length; i++) {
       const turn = updatedConversation[i];
+      // If the text is only '...' (possibly with whitespace), stop audio generation here
+      if (turn.text.trim() === '...') {
+        break;
+      }
       const tempFile = path.join(
         __dirname,
         `temp_audio_${i}.${audioFormat}`
@@ -102,7 +106,10 @@ export async function generateConversationPodcast(
         /\*([^*]+)\*/g,
         '<emphasis>$1</emphasis>'
       );
-      if (
+      // If the text is only '...', replace with a long SSML pause
+      if (textToSynthesize.trim() === '...') {
+        textToSynthesize = '<speak><break time="2s"/></speak>';
+      } else if (
         turn.emotion &&
         typeof turn.emotion === 'string' &&
         turn.emotion.trim() &&
