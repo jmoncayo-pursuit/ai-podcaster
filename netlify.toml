@@ -9,7 +9,7 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "http://localhost:3001/api/:splat"
+  to = "https://ai-podcaster-speechify.onrender.com/api/:splat"
   status = 200
   force = true
 
@@ -19,7 +19,8 @@
   status = 200
 
 [context.production.environment]
-  # Add frontend env vars here if needed
+  VITE_API_HOST = "ai-podcaster-speechify.onrender.com"
+  VITE_API_PORT = "443"
 
 [site]
   name = "ai-podcaster-speechify"
