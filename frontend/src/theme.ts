@@ -44,6 +44,18 @@ const darkTheme = createTheme({
       styleOverrides: {
         root: {
           color: '#f3f4f6',
+          transition: 'box-shadow 0.2s',
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#41D1FF', // blue as default
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#6C47FF', // purple on hover
+            boxShadow: '0 0 0 2px #6C47FF55',
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#6C47FF', // purple on focus
+            boxShadow: '0 0 0 3px #6C47FF99',
+          },
         },
         input: {
           color: '#f3f4f6',
@@ -54,6 +66,10 @@ const darkTheme = createTheme({
       styleOverrides: {
         root: {
           color: '#f3f4f6',
+          // Ensure label is readable when focused
+          '&.Mui-focused': {
+            color: '#41D1FF', // Use blue for focus for high contrast
+          },
         },
       },
     },
@@ -61,6 +77,18 @@ const darkTheme = createTheme({
       styleOverrides: {
         root: {
           color: '#f3f4f6',
+          transition: 'box-shadow 0.2s',
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#41D1FF', // blue as default
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#6C47FF', // purple on hover
+            boxShadow: '0 0 0 2px #6C47FF55',
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#6C47FF', // purple on focus
+            boxShadow: '0 0 0 3px #6C47FF99',
+          },
         },
         icon: {
           color: '#f3f4f6',

@@ -1,7 +1,7 @@
-import { convertTextToSpeech, TTSOptions } from './speechify'; 
+import { convertTextToSpeech, TTSOptions } from './speechify';
 import { concatAudioFiles } from './concatAudio';
 import { VOICES } from './voices';
-import { VoiceId } from './types'; 
+import { VoiceId } from './types';
 import fs from 'fs';
 import path from 'path';
 
@@ -9,6 +9,7 @@ export interface ConversationTurn {
   speaker: string;
   text: string;
   voiceId: string;
+  emotion?: string;
 }
 
 // Define an interface for the voice object matching voices.ts
@@ -19,7 +20,7 @@ interface Voice {
 }
 
 const validVoiceIds = new Set(VOICES.map((v: Voice) => v.id)); // Add type annotation for 'v'
-const DEFAULT_VOICE_ID: VoiceId = 'lisa'; 
+const DEFAULT_VOICE_ID: VoiceId = 'lisa';
 
 /**
  * Generates a podcast-style conversation audio file from turns
@@ -54,9 +55,15 @@ export async function generateConversationPodcast(
         );
       }
 
-      console.log(
-        `Processing turn ${i}: Speaker ${turn.speaker}, Voice ${voiceIdToUse}`
-      );
+      // Prepare text with emotion SSML if emotion is set
+      let textToSynthesize = turn.text;
+      if (
+        turn.emotion &&
+        typeof turn.emotion === 'string' &&
+        turn.emotion.trim()
+      ) {
+        textToSynthesize = `<speak><speechify:style emotion="${turn.emotion}">${turn.text}</speechify:style></speak>`;
+      }
 
       // Prepare options for convertTextToSpeech, excluding the 'input' property
       const options: Omit<TTSOptions, 'input'> = {
@@ -66,7 +73,7 @@ export async function generateConversationPodcast(
 
       // Pass text as the first argument and options as the second
       const audioBuffer = await convertTextToSpeech(
-        turn.text,
+        textToSynthesize,
         options
       );
 
@@ -74,18 +81,12 @@ export async function generateConversationPodcast(
       audioFiles.push(tempFile);
     }
 
-    console.log('Concatenating audio files...');
     await concatAudioFiles(audioFiles, outputFile);
-    console.log(
-      'Conversation podcast generated successfully:',
-      outputFile
-    );
   } catch (error) {
     console.error('Error generating conversation podcast:', error);
     throw error; // Re-throw the error to be caught by the API handler
   } finally {
     // Clean up temporary audio files
-    console.log('Cleaning up temporary files...');
     for (const file of audioFiles) {
       try {
         await fs.promises.unlink(file);
@@ -96,7 +97,6 @@ export async function generateConversationPodcast(
         );
       }
     }
-    console.log('Temporary files cleaned up.');
   }
 }
 

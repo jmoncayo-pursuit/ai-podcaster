@@ -18,10 +18,11 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import Icon192 from './assets/icon assets/android-chrome-192x192.png';
 import ConversationBuilder from './ConversationBuilder';
 import { VOICES } from './voices'; // Import shared voices
+import darkTheme from './theme';
 
 // Define the ConversationTurn interface to match what's used in ConversationBuilder
 interface ConversationTurn {
@@ -45,83 +46,6 @@ const apiBase =
 const apiUrl = `${apiBase}/api/tts`;
 const conversationApiUrl = `${apiBase}/api/conversation`;
 const aiConversationApiUrl = `${apiBase}/api/ai-conversation`;
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    background: {
-      default: '#181a1f',
-      paper: '#23262F',
-    },
-    text: {
-      primary: '#f3f4f6',
-      secondary: '#b0b3b8',
-    },
-    primary: {
-      main: '#6C47FF', // purple blend
-      contrastText: '#fff',
-    },
-    secondary: {
-      main: '#41D1FF', // blue accent
-      contrastText: '#fff',
-    },
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          color: '#fff',
-          background:
-            'linear-gradient(90deg, #6C47FF 0%, #41D1FF 100%)',
-        },
-      },
-    },
-    MuiInputBase: {
-      styleOverrides: {
-        root: {
-          color: '#f3f4f6',
-        },
-        input: {
-          color: '#f3f4f6',
-        },
-      },
-    },
-    MuiOutlinedInput: {
-      styleOverrides: {
-        root: {
-          color: '#f3f4f6',
-        },
-        input: {
-          color: '#f3f4f6',
-        },
-      },
-    },
-    MuiInputLabel: {
-      styleOverrides: {
-        root: {
-          color: '#f3f4f6',
-        },
-      },
-    },
-    MuiSelect: {
-      styleOverrides: {
-        root: {
-          color: '#f3f4f6',
-        },
-        icon: {
-          color: '#f3f4f6',
-        },
-      },
-    },
-    MuiTypography: {
-      styleOverrides: {
-        root: {
-          color: '#f3f4f6',
-        },
-      },
-    },
-  },
-});
 
 function App() {
   const [script, setScript] = useState('');
