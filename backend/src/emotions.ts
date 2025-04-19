@@ -5,7 +5,6 @@ export const EMOTIONS = [
   'terrified',
   'relaxed',
   'fearful',
-  'calm',
   'assertive',
   'energetic',
   'warm',

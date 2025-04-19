@@ -11,6 +11,10 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import DownloadIcon from '@mui/icons-material/Download';
+import ShareIcon from '@mui/icons-material/Share';
+import Tooltip from '@mui/material/Tooltip';
 import { EMOTIONS } from './emotions.js';
 
 interface ConversationTurn {
@@ -44,6 +48,13 @@ const ConversationBuilder: React.FC<ConversationBuilderProps> = ({
     'idle' | 'loading' | 'done' | 'error'
   >('idle');
   const [error, setError] = useState<string | null>(null);
+  const [lastSubmittedTurns, setLastSubmittedTurns] = useState<
+    ConversationTurn[] | null
+  >(null);
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>(
+    'idle'
+  );
+  const playerRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (initialTurns && initialTurns.length > 0) {
@@ -61,6 +72,15 @@ const ConversationBuilder: React.FC<ConversationBuilderProps> = ({
       setTurns(validatedTurns);
     }
   }, [initialTurns, voices]);
+
+  useEffect(() => {
+    if (status === 'done' && audioUrl && playerRef.current) {
+      playerRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+  }, [status, audioUrl]);
 
   const handleTurnChange = (
     idx: number,
@@ -95,9 +115,68 @@ const ConversationBuilder: React.FC<ConversationBuilderProps> = ({
     return null;
   };
 
+  const turnsEqual = (
+    a: ConversationTurn[],
+    b: ConversationTurn[] | null
+  ) => {
+    if (!b || a.length !== b.length) return false;
+    return a.every(
+      (turn, i) =>
+        turn.speaker === b[i].speaker &&
+        turn.text === b[i].text &&
+        turn.voiceId === b[i].voiceId &&
+        (turn.emotion || '') === (b[i].emotion || '')
+    );
+  };
+
+  const handleCopyTranscript = () => {
+    const transcript = turns
+      .map(
+        (turn) =>
+          `${
+            turn.speaker ||
+            voices.find((v) => v.id === turn.voiceId)?.label ||
+            'Speaker'
+          }: ${turn.text}`
+      )
+      .join('\n');
+    navigator.clipboard.writeText(transcript).then(() => {
+      setCopyStatus('copied');
+      setTimeout(() => setCopyStatus('idle'), 1500);
+    });
+  };
+
+  const handleDownloadAudio = () => {
+    if (!audioUrl) return;
+    const a = document.createElement('a');
+    a.href = audioUrl;
+    a.download = 'conversation.mp3';
+    a.click();
+  };
+
+  const handleShare = () => {
+    if (navigator.share && audioUrl) {
+      navigator.share({
+        title: 'AI Podcaster Conversation',
+        text: 'Listen to this AI-generated podcast conversation!',
+        url: audioUrl,
+      });
+    } else {
+      navigator.clipboard.writeText(audioUrl || '');
+      setCopyStatus('copied');
+      setTimeout(() => setCopyStatus('idle'), 1500);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    if (turnsEqual(turns, lastSubmittedTurns)) {
+      setError(
+        'No changes detected. Please modify the conversation before generating again.'
+      );
+      return;
+    }
     const validationError = validate();
     if (validationError) {
       setError(validationError);
@@ -125,6 +204,7 @@ const ConversationBuilder: React.FC<ConversationBuilderProps> = ({
       const blob = await res.blob();
       setAudioUrl(URL.createObjectURL(blob));
       setStatus('done');
+      setLastSubmittedTurns(turns.map((t) => ({ ...t }))); // Save a copy
     } catch {
       setStatus('error');
       setError('Something went wrong. Please try again.');
@@ -241,7 +321,10 @@ const ConversationBuilder: React.FC<ConversationBuilderProps> = ({
         </Button>
         <Button
           type='submit'
-          disabled={status === 'loading'}
+          disabled={
+            status === 'loading' ||
+            turnsEqual(turns, lastSubmittedTurns)
+          }
           color='primary'
           variant='contained'
           sx={{ ml: 'auto', minWidth: 180 }}
@@ -257,8 +340,77 @@ const ConversationBuilder: React.FC<ConversationBuilderProps> = ({
         </Alert>
       )}
       {status === 'done' && audioUrl && (
-        <Box sx={{ mt: 2 }}>
-          <audio controls src={audioUrl} style={{ width: '100%' }} />
+        <Box sx={{ mt: 2 }} ref={playerRef}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              bgcolor: '#181A20',
+              borderRadius: 2,
+              p: 2,
+              boxShadow: '0 2px 12px #41D1FF22',
+              mb: 2,
+            }}
+          >
+            <audio
+              controls
+              src={audioUrl}
+              style={{
+                width: '100%',
+                maxWidth: 420,
+                borderRadius: 8,
+                background: '#23262F',
+              }}
+            />
+            <Tooltip
+              title={
+                copyStatus === 'copied'
+                  ? 'Copied!'
+                  : 'Copy Transcript'
+              }
+            >
+              <IconButton
+                color='primary'
+                onClick={handleCopyTranscript}
+              >
+                <ContentCopyIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title='Download Audio'>
+              <IconButton
+                color='secondary'
+                onClick={handleDownloadAudio}
+              >
+                <DownloadIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title='Share'>
+              <IconButton color='info' onClick={handleShare}>
+                <ShareIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          {/* Transcript below the player */}
+          <Box
+            sx={{ mt: 3, bgcolor: '#23262F', borderRadius: 2, p: 2 }}
+          >
+            <strong>Transcript</strong>
+            <Box component='ol' sx={{ pl: 3, mt: 1 }}>
+              {turns.map((turn, idx) => (
+                <li key={idx} style={{ marginBottom: 8 }}>
+                  <b>
+                    {turn.speaker ||
+                      voices.find((v) => v.id === turn.voiceId)
+                        ?.label ||
+                      'Speaker'}
+                    :
+                  </b>{' '}
+                  {turn.text}
+                </li>
+              ))}
+            </Box>
+          </Box>
         </Box>
       )}
     </form>

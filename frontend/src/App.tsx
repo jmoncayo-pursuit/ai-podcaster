@@ -233,7 +233,7 @@ function App() {
                     setAiSpeakers(Number(e.target.value))
                   }
                   InputProps={{
-                    inputProps: { min: 2, max: 10 },
+                    inputProps: { min: 1, max: 10 },
                   }}
                   sx={{ width: 120 }}
                 />
