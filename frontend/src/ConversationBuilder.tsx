@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface ConversationTurn {
   speaker: string;
@@ -9,11 +9,13 @@ interface ConversationTurn {
 interface ConversationBuilderProps {
   voices: { id: string; label: string; gender: string }[];
   apiUrl: string;
+  initialTurns?: ConversationTurn[]; // New prop to accept initial turns
 }
 
 const ConversationBuilder: React.FC<ConversationBuilderProps> = ({
   voices,
   apiUrl,
+  initialTurns,
 }) => {
   const [turns, setTurns] = useState<ConversationTurn[]>([
     { speaker: '', text: '', voiceId: voices[0]?.id || '' },
@@ -23,6 +25,24 @@ const ConversationBuilder: React.FC<ConversationBuilderProps> = ({
     'idle' | 'loading' | 'done' | 'error'
   >('idle');
   const [error, setError] = useState<string | null>(null);
+
+  // Use initialTurns when provided
+  useEffect(() => {
+    if (initialTurns && initialTurns.length > 0) {
+      const validatedTurns = initialTurns.map((turn) => {
+        // Find a voice matching the speaker name (case-insensitive)
+        const match = voices.find(
+          (v) => v.label.toLowerCase() === turn.speaker.toLowerCase()
+        );
+        return {
+          speaker: turn.speaker || '',
+          text: turn.text || '',
+          voiceId: match?.id || voices[0]?.id || '',
+        };
+      });
+      setTurns(validatedTurns);
+    }
+  }, [initialTurns, voices]);
 
   const handleTurnChange = (
     idx: number,

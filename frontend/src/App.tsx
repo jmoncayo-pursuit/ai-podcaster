@@ -18,124 +18,17 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Icon192 from './assets/icon assets/android-chrome-192x192.png';
 import ConversationBuilder from './ConversationBuilder';
+import { VOICES } from './voices'; // Import shared voices
 
-const VOICES = [
-  { id: 'monica', label: 'Monica', gender: 'female' },
-  { id: 'bwyneth', label: 'Bwyneth', gender: 'female' },
-  { id: 'carly', label: 'Carly', gender: 'female' },
-  { id: 'kristy', label: 'Kristy', gender: 'female' },
-  { id: 'tasha', label: 'Tasha', gender: 'female' },
-  { id: 'lisa', label: 'Lisa', gender: 'female' },
-  { id: 'emily', label: 'Emily', gender: 'female' },
-  { id: 'julie', label: 'Julie', gender: 'female' },
-  { id: 'erin', label: 'Erin', gender: 'female' },
-  { id: 'lindsey', label: 'Lindsey', gender: 'female' },
-  { id: 'stacy', label: 'Stacy', gender: 'female' },
-  { id: 'evelyn', label: 'Evelyn', gender: 'female' },
-  { id: 'victoria', label: 'Victoria', gender: 'female' },
-  { id: 'george', label: 'George', gender: 'male' },
-  { id: 'oliver', label: 'Oliver', gender: 'male' },
-  { id: 'joe', label: 'Joe', gender: 'male' },
-  { id: 'mark', label: 'Mark', gender: 'male' },
-  { id: 'nick', label: 'Nick', gender: 'male' },
-  { id: 'jack', label: 'Jack', gender: 'male' },
-  { id: 'jesse', label: 'Jesse', gender: 'male' },
-  { id: 'keenan', label: 'Keenan', gender: 'male' },
-  { id: 'jacob', label: 'Jacob', gender: 'male' },
-  { id: 'james', label: 'James', gender: 'male' },
-  { id: 'mason', label: 'Mason', gender: 'male' },
-  { id: 'matthew', label: 'Matthew', gender: 'male' },
-  { id: 'brian', label: 'Brian', gender: 'male' },
-  { id: 'anthony', label: 'Anthony', gender: 'male' },
-  { id: 'donald', label: 'Donald', gender: 'male' },
-  { id: 'paul', label: 'Paul', gender: 'male' },
-  { id: 'steven', label: 'Steven', gender: 'male' },
-  { id: 'andrew', label: 'Andrew', gender: 'male' },
-  { id: 'kenneth', label: 'Kenneth', gender: 'male' },
-  { id: 'joshua', label: 'Joshua', gender: 'male' },
-  { id: 'samuel', label: 'Samuel', gender: 'male' },
-  { id: 'gregory', label: 'Gregory', gender: 'male' },
-  { id: 'frank', label: 'Frank', gender: 'male' },
-  { id: 'alexander', label: 'Alexander', gender: 'male' },
-  { id: 'raymond', label: 'Raymond', gender: 'male' },
-  { id: 'patrick', label: 'Patrick', gender: 'male' },
-  { id: 'bruce', label: 'Bruce', gender: 'male' },
-  { id: 'bobby', label: 'Bobby', gender: 'male' },
-  { id: 'johnny', label: 'Johnny', gender: 'male' },
-  { id: 'bradley', label: 'Bradley', gender: 'male' },
-  { id: 'dale', label: 'Dale', gender: 'male' },
-  { id: 'howard', label: 'Howard', gender: 'male' },
-  { id: 'fred', label: 'Fred', gender: 'male' },
-  { id: 'blake', label: 'Blake', gender: 'male' },
-  { id: 'dennis', label: 'Dennis', gender: 'male' },
-  { id: 'jerry', label: 'Jerry', gender: 'male' },
-  { id: 'tyler', label: 'Tyler', gender: 'male' },
-  { id: 'aaron', label: 'Aaron', gender: 'male' },
-  { id: 'larry', label: 'Larry', gender: 'male' },
-  { id: 'keith', label: 'Keith', gender: 'male' },
-  { id: 'scott', label: 'Scott', gender: 'male' },
-  { id: 'curtis', label: 'Curtis', gender: 'male' },
-  { id: 'todd', label: 'Todd', gender: 'male' },
-  { id: 'leonard', label: 'Leonard', gender: 'male' },
-  { id: 'calvin', label: 'Calvin', gender: 'male' },
-  { id: 'edwin', label: 'Edwin', gender: 'male' },
-  { id: 'don', label: 'Don', gender: 'male' },
-  { id: 'craig', label: 'Craig', gender: 'male' },
-  { id: 'danny', label: 'Danny', gender: 'male' },
-  { id: 'stanley', label: 'Stanley', gender: 'male' },
-  { id: 'jeffery', label: 'Jeffery', gender: 'male' },
-  { id: 'herbert', label: 'Herbert', gender: 'male' },
-  { id: 'lee', label: 'Lee', gender: 'male' },
-  { id: 'trevor', label: 'Trevor', gender: 'male' },
-  { id: 'brendan', label: 'Brendan', gender: 'male' },
-  { id: 'toby', label: 'Toby', gender: 'male' },
-  { id: 'van', label: 'Van', gender: 'male' },
-  { id: 'myron', label: 'Myron', gender: 'male' },
-  { id: 'boyd', label: 'Boyd', gender: 'male' },
-  { id: 'joel', label: 'Joel', gender: 'male' },
-  { id: 'earl', label: 'Earl', gender: 'male' },
-  { id: 'brett', label: 'Brett', gender: 'male' },
-  { id: 'steve', label: 'Steve', gender: 'male' },
-  { id: 'jon', label: 'Jon', gender: 'male' },
-  { id: 'bob', label: 'Bob', gender: 'male' },
-  { id: 'jim', label: 'Jim', gender: 'male' },
-  { id: 'matt', label: 'Matt', gender: 'male' },
-  { id: 'lyle', label: 'Lyle', gender: 'male' },
-  { id: 'hubert', label: 'Hubert', gender: 'male' },
-  { id: 'kenny', label: 'Kenny', gender: 'male' },
-  { id: 'doug', label: 'Doug', gender: 'male' },
-  { id: 'sammy', label: 'Sammy', gender: 'male' },
-  { id: 'homer', label: 'Homer', gender: 'male' },
-  { id: 'wendell', label: 'Wendell', gender: 'male' },
-  { id: 'woodrow', label: 'Woodrow', gender: 'male' },
-  { id: 'felipe', label: 'Felipe', gender: 'male' },
-  { id: 'garry', label: 'Garry', gender: 'male' },
-  { id: 'pete', label: 'Pete', gender: 'male' },
-  { id: 'marco', label: 'Marco', gender: 'male' },
-  { id: 'rufus', label: 'Rufus', gender: 'male' },
-  { id: 'owen', label: 'Owen', gender: 'male' },
-  { id: 'bryant', label: 'Bryant', gender: 'male' },
-  { id: 'abraham', label: 'Abraham', gender: 'male' },
-  { id: 'irving', label: 'Irving', gender: 'male' },
-  { id: 'jermaine', label: 'Jermaine', gender: 'male' },
-  { id: 'julius', label: 'Julius', gender: 'male' },
-  { id: 'marty', label: 'Marty', gender: 'male' },
-  { id: 'russell', label: 'Russell', gender: 'male' },
-  { id: 'benjamin', label: 'Benjamin', gender: 'male' },
-  { id: 'michael', label: 'Michael', gender: 'male' },
-  { id: 'collin', label: 'Collin', gender: 'male' },
-  { id: 'phil', label: 'Phil', gender: 'male' },
-  { id: 'archie', label: 'Archie', gender: 'male' },
-  { id: 'freddie', label: 'Freddie', gender: 'male' },
-  { id: 'harper', label: 'Harper', gender: 'male' },
-  { id: 'austin', label: 'Austin', gender: 'male' },
-  { id: 'derek', label: 'Derek', gender: 'male' },
-  { id: 'ellis', label: 'Ellis', gender: 'male' },
-  { id: 'ian', label: 'Ian', gender: 'male' },
-  { id: 'oscar', label: 'Oscar', gender: 'male' },
-];
+// Define the ConversationTurn interface to match what's used in ConversationBuilder
+interface ConversationTurn {
+  speaker: string;
+  text: string;
+  voiceId: string;
+}
 
 const FORMATS = [
   { id: 'mp3', label: 'MP3' },
@@ -146,6 +39,83 @@ const apiHost = import.meta.env.VITE_API_HOST || 'localhost';
 const apiPort = import.meta.env.VITE_API_PORT || '3001';
 const apiUrl = `http://${apiHost}:${apiPort}/api/tts`;
 const conversationApiUrl = `http://${apiHost}:${apiPort}/api/conversation`;
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    background: {
+      default: '#181a1f',
+      paper: '#23262F',
+    },
+    text: {
+      primary: '#f3f4f6',
+      secondary: '#b0b3b8',
+    },
+    primary: {
+      main: '#6C47FF', // purple blend
+      contrastText: '#fff',
+    },
+    secondary: {
+      main: '#41D1FF', // blue accent
+      contrastText: '#fff',
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          color: '#fff',
+          background:
+            'linear-gradient(90deg, #6C47FF 0%, #41D1FF 100%)',
+        },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          color: '#f3f4f6',
+        },
+        input: {
+          color: '#f3f4f6',
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          color: '#f3f4f6',
+        },
+        input: {
+          color: '#f3f4f6',
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: '#f3f4f6',
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        root: {
+          color: '#f3f4f6',
+        },
+        icon: {
+          color: '#f3f4f6',
+        },
+      },
+    },
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          color: '#f3f4f6',
+        },
+      },
+    },
+  },
+});
 
 function App() {
   const [script, setScript] = useState('');
@@ -162,9 +132,20 @@ function App() {
   const [gender, setGender] = useState<'all' | 'female' | 'male'>(
     'all'
   );
-  const [mode, setMode] = useState<'single' | 'conversation'>(
-    'single'
+  const [mode, setMode] = useState<'ai' | 'single' | 'conversation'>(
+    'ai'
   );
+  const [aiInput, setAiInput] = useState('');
+  const [aiTurns, setAiTurns] = useState(4);
+  const [aiSpeakers, setAiSpeakers] = useState(2);
+  const [aiLength, setAiLength] = useState(600);
+  const [aiStatus, setAiStatus] = useState<
+    'idle' | 'loading' | 'done' | 'error'
+  >('idle');
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [aiConversation, setAiConversation] = useState<
+    ConversationTurn[]
+  >([]);
   const fileInput = useRef<HTMLInputElement>(null);
 
   const filteredVoices =
@@ -210,261 +191,364 @@ function App() {
   };
 
   return (
-    <Container
-      maxWidth='sm'
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-      }}
-    >
-      <Paper
-        elevation={4}
-        sx={{ mt: 4, p: 3, borderRadius: 6, bgcolor: '#23262F' }}
+    <ThemeProvider theme={darkTheme}>
+      <Container
+        maxWidth='sm'
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }}
       >
-        <Box
-          display='flex'
-          alignItems='center'
-          justifyContent='center'
-          mb={2}
+        <Paper
+          elevation={4}
+          sx={{ mt: 4, p: 3, borderRadius: 6, bgcolor: '#23262F' }}
         >
-          <img
-            src={Icon192}
-            alt='AI Podcaster logo'
-            width={48}
-            height={48}
-            style={{ marginRight: 12 }}
-          />
-          <Typography
-            variant='h3'
-            align='center'
-            fontWeight={500}
-            gutterBottom
-            sx={{
-              color: '#6C47FF',
-              letterSpacing: 2,
-              textShadow: '0 2px 12px rgba(108,71,255,0.25)',
-              fontFamily: 'Roboto, system-ui, Arial, sans-serif',
-              background:
-                'linear-gradient(90deg, #6C47FF 0%, #41D1FF 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              display: 'inline-block',
-            }}
-          >
-            AI Podcaster
-          </Typography>
-        </Box>
-        <Box mb={2} display='flex' justifyContent='center' gap={2}>
-          <Button
-            variant={mode === 'single' ? 'contained' : 'outlined'}
-            onClick={() => setMode('single')}
-          >
-            Single Speaker
-          </Button>
-          <Button
-            variant={
-              mode === 'conversation' ? 'contained' : 'outlined'
-            }
-            onClick={() => setMode('conversation')}
-          >
-            Conversation Builder
-          </Button>
-        </Box>
-        {mode === 'single' ? (
           <Box
-            component='form'
-            onSubmit={handleSubmit}
-            aria-label='Podcast script upload or input form'
-            sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
+            display='flex'
+            alignItems='center'
+            justifyContent='center'
+            mb={2}
           >
-            <TextField
-              id='script-input'
-              label='Podcast Script'
-              aria-label='Podcast script text area'
-              value={script}
-              onChange={(e) => setScript(e.target.value)}
-              placeholder='Paste or type your podcast script here...'
-              multiline
-              minRows={6}
-              required
-              fullWidth
-              sx={{
-                background: '#181A20',
-                color: '#F3F4F6',
-                '& .MuiInputBase-root': {
-                  color: '#F3F4F6',
-                  background: '#181A20',
-                  borderRadius: 2,
-                },
-                '& .MuiInputLabel-root': {
-                  color: '#F3F4F6',
-                  background: '#23262F',
-                  px: '4px',
-                },
-              }}
+            <img
+              src={Icon192}
+              alt='AI Podcaster logo'
+              width={48}
+              height={48}
+              style={{ marginRight: 12 }}
             />
-            <Box mb={2}>
-              <Box
-                sx={{
-                  mb: 1,
-                  display: 'flex',
-                  justifyContent: 'center',
-                  gap: 1,
-                }}
+            <Typography
+              variant='h3'
+              align='center'
+              fontWeight={500}
+              gutterBottom
+              sx={{
+                color: '#6C47FF',
+                letterSpacing: 2,
+                textShadow: '0 2px 12px rgba(108,71,255,0.25)',
+                fontFamily: 'Roboto, system-ui, Arial, sans-serif',
+                background:
+                  'linear-gradient(90deg, #6C47FF 0%, #41D1FF 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                display: 'inline-block',
+              }}
+            >
+              AI Podcaster
+            </Typography>
+          </Box>
+          <Box mb={2} display='flex' justifyContent='center' gap={2}>
+            <Button
+              variant={mode === 'ai' ? 'contained' : 'outlined'}
+              onClick={() => setMode('ai')}
+            >
+              AI Conversation Constructor
+            </Button>
+            <Button
+              variant={mode === 'single' ? 'contained' : 'outlined'}
+              onClick={() => setMode('single')}
+            >
+              Single Speaker
+            </Button>
+            <Button
+              variant={
+                mode === 'conversation' ? 'contained' : 'outlined'
+              }
+              onClick={() => setMode('conversation')}
+            >
+              Conversation Builder
+            </Button>
+          </Box>
+          {mode === 'ai' && (
+            <Box
+              sx={{
+                bgcolor: '#181A20',
+                p: 3,
+                borderRadius: 3,
+                mb: 3,
+              }}
+            >
+              <Typography
+                variant='h5'
+                sx={{ color: '#6C47FF', mb: 2 }}
               >
-                <Button
-                  variant={
-                    gender === 'all' ? 'contained' : 'outlined'
-                  }
-                  size='small'
-                  sx={{
-                    borderRadius: 4,
-                    minWidth: 0,
-                    px: 2,
-                    bgcolor: gender === 'all' ? '#6C47FF' : undefined,
+                AI Conversation Constructor
+              </Typography>
+              <TextField
+                label='Topic, prompt, or paste content'
+                value={aiInput}
+                onChange={(e) => setAiInput(e.target.value)}
+                fullWidth
+                multiline
+                minRows={2}
+                sx={{ mb: 2 }}
+              />
+              <Box display='flex' gap={2} mb={2}>
+                <TextField
+                  label='Number of Turns'
+                  type='number'
+                  value={aiTurns}
+                  onChange={(e) => setAiTurns(Number(e.target.value))}
+                  InputProps={{
+                    inputProps: { min: 2, max: 20 },
                   }}
-                  onClick={() => setGender('all')}
-                >
-                  All
-                </Button>
-                <Button
-                  variant={
-                    gender === 'female' ? 'contained' : 'outlined'
+                  sx={{ width: 120 }}
+                />
+                <TextField
+                  label='Speakers'
+                  type='number'
+                  value={aiSpeakers}
+                  onChange={(e) =>
+                    setAiSpeakers(Number(e.target.value))
                   }
-                  size='small'
-                  sx={{
-                    borderRadius: 4,
-                    minWidth: 0,
-                    px: 2,
-                    bgcolor:
-                      gender === 'female' ? '#6C47FF' : undefined,
+                  InputProps={{
+                    inputProps: { min: 2, max: 10 },
                   }}
-                  onClick={() => setGender('female')}
-                  title='Female'
-                >
-                  <FemaleIcon
-                    sx={{ verticalAlign: 'middle', mr: 0.5 }}
-                  />
-                </Button>
-                <Button
-                  variant={
-                    gender === 'male' ? 'contained' : 'outlined'
+                  sx={{ width: 120 }}
+                />
+                <TextField
+                  label='Length Limit (chars)'
+                  type='number'
+                  value={aiLength}
+                  onChange={(e) =>
+                    setAiLength(Number(e.target.value))
                   }
-                  size='small'
-                  sx={{
-                    borderRadius: 4,
-                    minWidth: 0,
-                    px: 2,
-                    bgcolor:
-                      gender === 'male' ? '#6C47FF' : undefined,
+                  InputProps={{
+                    inputProps: { min: 100, max: 2000 },
                   }}
-                  onClick={() => setGender('male')}
-                  title='Male'
+                  sx={{ width: 160 }}
+                />
+              </Box>
+              <Box display='flex' gap={2}>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  disabled={aiStatus === 'loading' || !aiInput.trim()}
+                  onClick={async () => {
+                    setAiStatus('loading');
+                    setAiError(null);
+                    setAiConversation([]);
+                    try {
+                      const res = await fetch(
+                        `http://${apiHost}:${apiPort}/api/ai-conversation`,
+                        {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                          },
+                          body: JSON.stringify({
+                            input: aiInput,
+                            turns: aiTurns,
+                            speakers: aiSpeakers,
+                            length: aiLength,
+                          }),
+                        }
+                      );
+                      if (!res.ok) {
+                        const err = await res
+                          .json()
+                          .catch(() => ({}));
+                        throw new Error(
+                          err.error || 'AI conversation failed'
+                        );
+                      }
+                      const data = await res.json();
+                      setAiConversation(data.conversation || []);
+                      setAiStatus('done');
+                    } catch (e: any) {
+                      setAiError(
+                        e.message || 'Something went wrong.'
+                      );
+                      setAiStatus('error');
+                    }
+                  }}
                 >
-                  <MaleIcon
-                    sx={{ verticalAlign: 'middle', mr: 0.5 }}
-                  />
+                  {aiStatus === 'loading' ? (
+                    <>
+                      <CircularProgress
+                        size={18}
+                        sx={{ color: '#fff', mr: 1 }}
+                      />
+                      Generating...
+                    </>
+                  ) : (
+                    'Generate Conversation'
+                  )}
                 </Button>
               </Box>
-              <FormControl fullWidth>
-                <InputLabel
-                  id='voice-select-label'
-                  sx={{
-                    color: '#F3F4F6',
-                    background: '#23262F',
-                    px: 0.5,
-                  }}
-                >
-                  Voice
-                </InputLabel>
-                <Select
-                  labelId='voice-select-label'
-                  id='voice-select'
-                  value={
-                    filteredVoices.find((v) => v.id === voiceId)
-                      ? voiceId
-                      : filteredVoices[0]?.id || ''
-                  }
-                  label='Voice'
-                  onChange={(e) => setVoiceId(e.target.value)}
-                  aria-label='Select voice for podcast audio'
-                  sx={{
+              {aiStatus === 'loading' && (
+                <Alert severity='info' sx={{ mt: 2 }}>
+                  Generating conversation, please wait...
+                </Alert>
+              )}
+              {aiError && (
+                <Alert severity='error' sx={{ mt: 2 }}>
+                  {aiError}
+                </Alert>
+              )}
+              {aiStatus === 'done' && aiConversation.length > 0 && (
+                <Box mt={3}>
+                  <Alert severity='success' sx={{ mb: 2 }}>
+                    AI conversation generated! Review and edit below.
+                  </Alert>
+                  <Typography
+                    variant='subtitle1'
+                    sx={{ color: '#41D1FF', mb: 1 }}
+                  >
+                    Preview & Edit Conversation
+                  </Typography>
+                  <Box sx={{ mb: 2 }}>
+                    {aiConversation.map((turn, idx) => (
+                      <Box
+                        key={idx}
+                        sx={{
+                          mb: 1,
+                          p: 1,
+                          bgcolor: '#23262F',
+                          borderRadius: 2,
+                        }}
+                      >
+                        <b>{turn.speaker}:</b> {turn.text}
+                      </Box>
+                    ))}
+                  </Box>
+                  <Button
+                    variant='contained'
+                    color='secondary'
+                    onClick={() => {
+                      setMode('conversation');
+                    }}
+                  >
+                    Send to Conversation Builder
+                  </Button>
+                </Box>
+              )}
+            </Box>
+          )}
+          {mode === 'single' && (
+            <Box
+              component='form'
+              onSubmit={handleSubmit}
+              aria-label='Podcast script upload or input form'
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 3,
+              }}
+            >
+              <TextField
+                id='script-input'
+                label='Podcast Script'
+                aria-label='Podcast script text area'
+                value={script}
+                onChange={(e) => setScript(e.target.value)}
+                placeholder='Paste or type your podcast script here...'
+                multiline
+                minRows={6}
+                required
+                fullWidth
+                sx={{
+                  background: '#181A20',
+                  color: '#F3F4F6',
+                  '& .MuiInputBase-root': {
                     color: '#F3F4F6',
                     background: '#181A20',
-                    borderRadius: 6,
-                  }}
-                  MenuProps={{
-                    PaperProps: {
-                      sx: { bgcolor: '#23262F', color: '#F3F4F6' },
-                    },
-                  }}
-                >
-                  {filteredVoices.map((v) => (
-                    <MenuItem key={v.id} value={v.id}>
-                      {v.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-            <Grid container spacing={2} alignItems='center'>
-              <Grid sx={{ flex: 1, minWidth: 0 }}>
-                <Button
-                  variant='outlined'
-                  component='label'
-                  startIcon={<UploadFileIcon />}
-                  aria-label='Upload podcast script file (PDF, DOC, DOCX, TXT)'
-                  title='Supports PDF, DOC, DOCX, and TXT files'
-                  sx={{
+                    borderRadius: 2,
+                  },
+                  '& .MuiInputLabel-root': {
                     color: '#F3F4F6',
-                    borderColor: '#6C47FF',
-                    borderRadius: 6,
-                    width: '100%',
-                    '&:hover': { borderColor: '#4B2ED6' },
-                  }}
-                >
-                  Upload File
-                  <input
-                    type='file'
-                    accept='.txt,.pdf,.doc,.docx'
-                    hidden
-                    ref={fileInput}
-                    onChange={handleFile}
-                  />
-                </Button>
-                <Typography
-                  variant='caption'
+                    background: '#23262F',
+                    px: '4px',
+                  },
+                }}
+              />
+              <Box mb={2}>
+                <Box
                   sx={{
-                    color: '#b0b3b8',
-                    mt: 0.5,
-                    display: 'block',
-                    textAlign: 'center',
+                    mb: 1,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    gap: 1,
                   }}
                 >
-                  Supports PDF, DOC, DOCX, and TXT files
-                </Typography>
-              </Grid>
-              <Grid sx={{ flex: 1, minWidth: 0 }}>
+                  <Button
+                    variant={
+                      gender === 'all' ? 'contained' : 'outlined'
+                    }
+                    size='small'
+                    sx={{
+                      borderRadius: 4,
+                      minWidth: 0,
+                      px: 2,
+                      bgcolor:
+                        gender === 'all' ? '#6C47FF' : undefined,
+                    }}
+                    onClick={() => setGender('all')}
+                  >
+                    All
+                  </Button>
+                  <Button
+                    variant={
+                      gender === 'female' ? 'contained' : 'outlined'
+                    }
+                    size='small'
+                    sx={{
+                      borderRadius: 4,
+                      minWidth: 0,
+                      px: 2,
+                      bgcolor:
+                        gender === 'female' ? '#6C47FF' : undefined,
+                    }}
+                    onClick={() => setGender('female')}
+                    title='Female'
+                  >
+                    <FemaleIcon
+                      sx={{ verticalAlign: 'middle', mr: 0.5 }}
+                    />
+                  </Button>
+                  <Button
+                    variant={
+                      gender === 'male' ? 'contained' : 'outlined'
+                    }
+                    size='small'
+                    sx={{
+                      borderRadius: 4,
+                      minWidth: 0,
+                      px: 2,
+                      bgcolor:
+                        gender === 'male' ? '#6C47FF' : undefined,
+                    }}
+                    onClick={() => setGender('male')}
+                    title='Male'
+                  >
+                    <MaleIcon
+                      sx={{ verticalAlign: 'middle', mr: 0.5 }}
+                    />
+                  </Button>
+                </Box>
                 <FormControl fullWidth>
                   <InputLabel
-                    id='format-select-label'
+                    id='voice-select-label'
                     sx={{
                       color: '#F3F4F6',
                       background: '#23262F',
                       px: 0.5,
                     }}
                   >
-                    Format
+                    Voice
                   </InputLabel>
                   <Select
-                    labelId='format-select-label'
-                    id='format-select'
-                    value={audioFormat}
-                    label='Format'
-                    onChange={(e) => setAudioFormat(e.target.value)}
-                    aria-label='Select audio format'
+                    labelId='voice-select-label'
+                    id='voice-select'
+                    value={
+                      filteredVoices.find((v) => v.id === voiceId)
+                        ? voiceId
+                        : filteredVoices[0]?.id || ''
+                    }
+                    label='Voice'
+                    onChange={(e) => setVoiceId(e.target.value)}
+                    aria-label='Select voice for podcast audio'
                     sx={{
                       color: '#F3F4F6',
                       background: '#181A20',
@@ -476,111 +560,196 @@ function App() {
                       },
                     }}
                   >
-                    {FORMATS.map((f) => (
-                      <MenuItem key={f.id} value={f.id}>
-                        {f.label}
+                    {filteredVoices.map((v) => (
+                      <MenuItem key={v.id} value={v.id}>
+                        {v.label}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
-              </Grid>
-            </Grid>
-            <Button
-              type='submit'
-              variant='contained'
-              color='primary'
-              disabled={status === 'loading'}
-              aria-busy={status === 'loading'}
-              sx={{
-                mt: 2,
-                minWidth: 160,
-                fontWeight: 600,
-                fontSize: '1.1rem',
-                bgcolor: '#6C47FF',
-                borderRadius: 6,
-                '&:hover': { bgcolor: '#4B2ED6' },
-              }}
-            >
-              {status === 'loading' ? (
-                <>
-                  <CircularProgress
-                    size={22}
-                    sx={{ color: '#fff', mr: 1 }}
-                  />
-                  Converting…
-                </>
-              ) : (
-                'Convert to Audio'
-              )}
-            </Button>
-            {status === 'done' && audioUrl && (
-              <Box mt={3} textAlign='center'>
-                <Box
-                  display='flex'
-                  alignItems='center'
-                  justifyContent='center'
-                  mb={1}
-                >
-                  <AudiotrackIcon
+              </Box>
+              <Grid container spacing={2} alignItems='center'>
+                <Grid sx={{ flex: 1, minWidth: 0 }}>
+                  <Button
+                    variant='outlined'
+                    component='label'
+                    startIcon={<UploadFileIcon />}
+                    aria-label='Upload podcast script file (PDF, DOC, DOCX, TXT)'
+                    title='Supports PDF, DOC, DOCX, and TXT files'
                     sx={{
-                      color: '#6C47FF',
-                      fontSize: 32,
-                      mr: 1,
-                      textShadow: '0 2px 12px rgba(108,71,255,0.25)',
-                    }}
-                  />
-                  <Typography
-                    variant='h5'
-                    fontWeight={500}
-                    sx={{
-                      color: '#6C47FF',
-                      letterSpacing: 1,
-                      textShadow: '0 2px 12px rgba(108,71,255,0.25)',
-                      fontFamily:
-                        'Roboto, system-ui, Arial, sans-serif',
-                      background:
-                        'linear-gradient(90deg, #6C47FF 0%, #41D1FF 100%)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      display: 'inline-block',
+                      color: '#F3F4F6',
+                      borderColor: '#6C47FF',
+                      borderRadius: 6,
+                      width: '100%',
+                      '&:hover': { borderColor: '#4B2ED6' },
                     }}
                   >
-                    Result
+                    Upload File
+                    <input
+                      type='file'
+                      accept='.txt,.pdf,.doc,.docx'
+                      hidden
+                      ref={fileInput}
+                      onChange={handleFile}
+                    />
+                  </Button>
+                  <Typography
+                    variant='caption'
+                    sx={{
+                      color: '#b0b3b8',
+                      mt: 0.5,
+                      display: 'block',
+                      textAlign: 'center',
+                    }}
+                  >
+                    Supports PDF, DOC, DOCX, and TXT files
                   </Typography>
+                </Grid>
+                <Grid sx={{ flex: 1, minWidth: 0 }}>
+                  <FormControl fullWidth>
+                    <InputLabel
+                      id='format-select-label'
+                      sx={{
+                        color: '#F3F4F6',
+                        background: '#23262F',
+                        px: 0.5,
+                      }}
+                    >
+                      Format
+                    </InputLabel>
+                    <Select
+                      labelId='format-select-label'
+                      id='format-select'
+                      value={audioFormat}
+                      label='Format'
+                      onChange={(e) => setAudioFormat(e.target.value)}
+                      aria-label='Select audio format'
+                      sx={{
+                        color: '#F3F4F6',
+                        background: '#181A20',
+                        borderRadius: 6,
+                      }}
+                      MenuProps={{
+                        PaperProps: {
+                          sx: {
+                            bgcolor: '#23262F',
+                            color: '#F3F4F6',
+                          },
+                        },
+                      }}
+                    >
+                      {FORMATS.map((f) => (
+                        <MenuItem key={f.id} value={f.id}>
+                          {f.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+              <Button
+                type='submit'
+                variant='contained'
+                color='primary'
+                disabled={status === 'loading'}
+                aria-busy={status === 'loading'}
+                sx={{
+                  mt: 2,
+                  minWidth: 160,
+                  fontWeight: 600,
+                  fontSize: '1.1rem',
+                  bgcolor: '#6C47FF',
+                  borderRadius: 6,
+                  '&:hover': { bgcolor: '#4B2ED6' },
+                }}
+              >
+                {status === 'loading' ? (
+                  <>
+                    <CircularProgress
+                      size={22}
+                      sx={{ color: '#fff', mr: 1 }}
+                    />
+                    Converting…
+                  </>
+                ) : (
+                  'Convert to Audio'
+                )}
+              </Button>
+              {status === 'done' && audioUrl && (
+                <Box mt={3} textAlign='center'>
+                  <Box
+                    display='flex'
+                    alignItems='center'
+                    justifyContent='center'
+                    mb={1}
+                  >
+                    <AudiotrackIcon
+                      sx={{
+                        color: '#6C47FF',
+                        fontSize: 32,
+                        mr: 1,
+                        textShadow:
+                          '0 2px 12px rgba(108,71,255,0.25)',
+                      }}
+                    />
+                    <Typography
+                      variant='h5'
+                      fontWeight={500}
+                      sx={{
+                        color: '#6C47FF',
+                        letterSpacing: 1,
+                        textShadow:
+                          '0 2px 12px rgba(108,71,255,0.25)',
+                        fontFamily:
+                          'Roboto, system-ui, Arial, sans-serif',
+                        background:
+                          'linear-gradient(90deg, #6C47FF 0%, #41D1FF 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        display: 'inline-block',
+                      }}
+                    >
+                      Result
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      width: '100%',
+                      maxWidth: 420,
+                      mx: 'auto',
+                    }}
+                  >
+                    <audio
+                      controls
+                      src={audioUrl}
+                      aria-label='Podcast audio playback'
+                      className='custom-audio'
+                      style={{ width: '100%' }}
+                      id='audio-player'
+                    />
+                  </Box>
                 </Box>
-                <Box
-                  sx={{
-                    position: 'relative',
-                    width: '100%',
-                    maxWidth: 420,
-                    mx: 'auto',
-                  }}
-                >
-                  <audio
-                    controls
-                    src={audioUrl}
-                    aria-label='Podcast audio playback'
-                    className='custom-audio'
-                    style={{ width: '100%' }}
-                    id='audio-player'
-                  />
-                </Box>
-              </Box>
-            )}
-            {status === 'error' && (
-              <Alert severity='error'>
-                Something went wrong. Please try again.
-              </Alert>
-            )}
-          </Box>
-        ) : (
-          <ConversationBuilder
-            voices={VOICES}
-            apiUrl={conversationApiUrl}
-          />
-        )}
-      </Paper>
-    </Container>
+              )}
+              {status === 'error' && (
+                <Alert severity='error'>
+                  Something went wrong. Please try again.
+                </Alert>
+              )}
+            </Box>
+          )}
+          {mode === 'conversation' && (
+            <ConversationBuilder
+              voices={VOICES}
+              apiUrl={conversationApiUrl}
+              initialTurns={
+                aiConversation.length > 0 ? aiConversation : undefined
+              }
+            />
+          )}
+        </Paper>
+      </Container>
+    </ThemeProvider>
   );
 }
 
