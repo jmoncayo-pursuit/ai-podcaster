@@ -52,6 +52,7 @@ Requirements:
 - Length limit: ${length} characters total.
 - For each turn, set an appropriate emotion from this finite list: [${emotionList}] or use 'None' for neutral sentences, and include it as an 'emotion' field. The 'emotion' field must always be present and set to either a valid emotion or 'None'. Do not omit the 'emotion' field for any turn.
 - For each speaker, assign a unique speaker name and a valid voiceId from this finite list: [${voiceIdList}]. Only use these values for voiceId. Use a different voiceId for each speaker if possible.
+- Do NOT create any conversation turn where the text is only '...'. If a pause or hesitation is needed, incorporate it into the flow of dialogue using natural language (e.g., "Well... I don't know" or "Um...") or simply omit the pause.
 - Output as a JSON array of objects: [{speaker, text, voiceId, emotion}].
 - Example output:
 [
