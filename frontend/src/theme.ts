@@ -27,6 +27,42 @@ const darkTheme = createTheme({
           color: '#fff',
           background:
             'linear-gradient(90deg, #6C47FF 0%, #41D1FF 100%)',
+          boxShadow: '0 2px 8px rgba(108, 71, 255, 0.12)',
+          position: 'relative',
+          overflow: 'hidden',
+          transition:
+            'background 0.3s, box-shadow 0.2s, transform 0.1s',
+          '&:hover': {
+            background:
+              'linear-gradient(90deg, #41D1FF 0%, #6C47FF 100%)',
+            boxShadow: '0 4px 16px #41D1FF44',
+          },
+          '&:active': {
+            transform: 'scale(0.97)',
+            boxShadow: '0 2px 8px #6C47FF99',
+          },
+          // Shiny effect
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            left: '-75%',
+            top: 0,
+            height: '100%',
+            width: '50%',
+            background:
+              'linear-gradient(120deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.15) 100%)',
+            transform: 'skewX(-20deg)',
+            transition: 'left 0.5s',
+            pointerEvents: 'none',
+          },
+          '&:hover::before': {
+            left: '120%',
+            transition: 'left 0.5s',
+          },
+          '&:active::before': {
+            left: '120%',
+            transition: 'left 0.2s',
+          },
         },
       },
     },

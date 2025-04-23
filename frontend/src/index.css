@@ -158,6 +158,43 @@ textarea:focus {
   color-scheme: dark;
 }
 
+/* Add a cool animated spinner for .custom-loader */
+.custom-loader {
+  display: inline-block;
+  position: relative;
+  width: 32px;
+  height: 32px;
+}
+.custom-loader-inner {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 4px solid #41d1ff;
+  border-radius: 50%;
+  border-top-color: #fff;
+  border-right-color: #6c47ff;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  animation: custom-spin 1s cubic-bezier(0.6, 0.2, 0.4, 0.8) infinite;
+  box-shadow: 0 0 16px #41d1ff55;
+}
+@keyframes custom-spin {
+  0% {
+    transform: rotate(0deg) scale(1);
+    box-shadow: 0 0 16px #41d1ff55;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.12);
+    box-shadow: 0 0 32px #6c47ff88;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    box-shadow: 0 0 16px #41d1ff55;
+  }
+}
+
 @media (max-width: 600px) {
   .container {
     padding: 0.5rem;

@@ -9,7 +9,6 @@ import {
   Select,
   TextField,
   Typography,
-  CircularProgress,
   Alert,
   Grid,
   Paper,
@@ -23,6 +22,7 @@ import Icon192 from './assets/icon assets/android-chrome-192x192.png';
 import ConversationBuilder from './ConversationBuilder';
 import { VOICES } from './voices'; // Import shared voices
 import darkTheme from './theme';
+import CustomLoader from './CustomLoader';
 
 // Define the ConversationTurn interface to match what's used in ConversationBuilder
 interface ConversationTurn {
@@ -294,11 +294,10 @@ function App() {
                 >
                   {aiStatus === 'loading' ? (
                     <>
-                      <CircularProgress
-                        size={18}
-                        sx={{ color: '#fff', mr: 1 }}
-                      />
-                      Generating...
+                      <CustomLoader size={18} />
+                      <span style={{ marginLeft: 8 }}>
+                        Generating...
+                      </span>
                     </>
                   ) : (
                     'Generate Conversation'
@@ -615,11 +614,8 @@ function App() {
               >
                 {status === 'loading' ? (
                   <>
-                    <CircularProgress
-                      size={22}
-                      sx={{ color: '#fff', mr: 1 }}
-                    />
-                    Converting…
+                    <CustomLoader size={22} />
+                    <span style={{ marginLeft: 8 }}>Converting…</span>
                   </>
                 ) : (
                   'Convert to Audio'

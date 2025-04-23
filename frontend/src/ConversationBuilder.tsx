@@ -16,6 +16,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import ShareIcon from '@mui/icons-material/Share';
 import Tooltip from '@mui/material/Tooltip';
 import { EMOTIONS } from './emotions.js';
+import CustomLoader from './CustomLoader';
 
 interface ConversationTurn {
   speaker: string;
@@ -62,7 +63,9 @@ const ConversationBuilder: React.FC<ConversationBuilderProps> = ({
         // Use the provided voiceId if it's valid, otherwise try to match by speaker name
         const validVoice = voices.find((v) => v.id === turn.voiceId);
         const fallbackVoice = voices.find(
-          (v) => v.label.toLowerCase() === turn.speaker.trim().toLowerCase()
+          (v) =>
+            v.label.toLowerCase() ===
+            turn.speaker.trim().toLowerCase()
         );
         return {
           speaker: turn.speaker || '',
@@ -335,9 +338,14 @@ const ConversationBuilder: React.FC<ConversationBuilderProps> = ({
           variant='contained'
           sx={{ ml: 'auto', minWidth: 180 }}
         >
-          {status === 'loading'
-            ? 'Generating...'
-            : 'Generate Conversation Audio'}
+          {status === 'loading' ? (
+            <>
+              <CustomLoader size={20} />
+              <span style={{ marginLeft: 8 }}>Generating...</span>
+            </>
+          ) : (
+            'Generate Conversation Audio'
+          )}
         </Button>
       </Box>
       {error && (
