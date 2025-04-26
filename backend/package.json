@@ -19,7 +19,6 @@
   "scripts": {
     "dev": "nodemon --watch src --exec 'node --no-deprecation -r ts-node/register src/server.ts'",
     "start": "node --no-deprecation -r ts-node/register src/server.ts",
-    "cli": "ts-node src/index.ts",
     "postinstall": "apt-get update && apt-get install -y ffmpeg || true"
   }
 }

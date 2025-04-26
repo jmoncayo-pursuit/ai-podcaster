@@ -12,7 +12,7 @@ Topics: text-to-speech podcast react typescript express mui speechify accessibil
 - Multiple voice and format options
 - Modern, accessible, and responsive React frontend (Vite + MUI)
 - REST API backend (Express + TypeScript)
-- CLI/script for easy use
+- **Streaming TTS:** Uses Speechify's official streaming endpoint for instant audio playback
 
 ## Technologies Used
 
@@ -44,15 +44,6 @@ Topics: text-to-speech podcast react typescript express mui speechify accessibil
      ```
 
 ## Usage
-
-### Backend CLI
-
-Convert a text file to mp3:
-
-```sh
-cd backend
-npm run cli -- input.txt output.mp3
-```
 
 ### Backend API
 
@@ -147,6 +138,7 @@ curl -X POST http://localhost:3001/api/conversation \
 
 - Requires Node.js & TypeScript
 - Do not commit your `.env` file or API keys
+- CLI/script usage has been removed; project is now API and web app only
 - Expandable for more podcast features
 
 ## Reference

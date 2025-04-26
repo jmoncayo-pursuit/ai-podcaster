@@ -76,23 +76,21 @@ const handleConversation: RequestHandler = async (req, res) => {
   // If only one turn, stream TTS audio directly (no concat)
   if (conversation.length === 1) {
     try {
-      res.set('Content-Type', 'audio/mpeg');
-      // Optionally: res.set('Transfer-Encoding', 'chunked');
       const turn = conversation[0];
-      // Prepare options for convertTextToSpeech
       const options: Omit<TTSOptions, 'input'> = {
         voiceId: turn.voiceId,
         audioFormat: audioFormat || 'mp3',
       };
-      const audioBuffer = await convertTextToSpeech(
+      // Use Speechify's official streaming endpoint
+      await require('./speechify').streamTextToSpeech(
         turn.text,
-        options
+        options,
+        res
       );
-      res.send(audioBuffer);
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       console.error('Error streaming single-turn TTS:', msg);
-      res.status(500).json({ error: msg });
+      if (!res.headersSent) res.status(500).json({ error: msg });
     }
     return;
   }
