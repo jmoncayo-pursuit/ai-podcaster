@@ -12,12 +12,13 @@
     "@types/express": "^5.0.1",
     "@types/fluent-ffmpeg": "^2.1.27",
     "@types/node": "^22.14.1",
+    "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
   "scripts": {
-    "dev": "ts-node src/server.ts",
-    "start": "ts-node src/server.ts",
+    "dev": "nodemon --watch src --exec 'node --no-deprecation -r ts-node/register src/server.ts'",
+    "start": "node --no-deprecation -r ts-node/register src/server.ts",
     "cli": "ts-node src/index.ts",
     "postinstall": "apt-get update && apt-get install -y ffmpeg || true"
   }
