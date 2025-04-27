@@ -52,12 +52,6 @@ const handleTTS: RequestHandler = (req, res) => {
 };
 
 const handleConversation: RequestHandler = async (req, res) => {
-  console.log(
-    'Conversation request received:',
-    req.body?.conversation?.length,
-    'turns'
-  );
-
   const { conversation, audioFormat } = req.body || {};
   if (!Array.isArray(conversation) || conversation.length === 0) {
     res
@@ -85,9 +79,6 @@ const handleConversation: RequestHandler = async (req, res) => {
   );
   if (uniqueVoiceIds.length === 1) {
     try {
-      console.log(
-        '[TTS] Streaming single-voiceId multi-turn conversation as one SSML stream'
-      );
       // Build SSML with emotion for each turn
       const SUPPORTED_EMOTIONS = [
         'angry',
@@ -123,8 +114,6 @@ const handleConversation: RequestHandler = async (req, res) => {
           })
           .join(' ') +
         `</speak>`;
-      // Log the generated SSML for debugging
-      console.log('[TTS] Generated SSML:', ssml);
       const options = {
         voiceId: uniqueVoiceIds[0],
         audioFormat: audioFormat || 'mp3',
@@ -172,8 +161,6 @@ const handleConversation: RequestHandler = async (req, res) => {
 };
 
 const handleAIConversation: RequestHandler = (req, res) => {
-  console.log('AI conversation request received:', req.body);
-
   if (!isGeminiAvailable()) {
     console.error('Gemini API key not set or invalid');
     res.status(500).json({ error: 'Gemini API key not set' });
@@ -188,11 +175,6 @@ const handleAIConversation: RequestHandler = (req, res) => {
 
   generateAIConversation(input, { turns, speakers, length })
     .then((conversation) => {
-      console.log(
-        'AI conversation generated successfully:',
-        conversation.length,
-        'turns'
-      );
       res.json({ conversation });
     })
     .catch((e: unknown) => {

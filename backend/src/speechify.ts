@@ -43,20 +43,14 @@ export async function convertTextToSpeech(
   const chunks = chunkText(text, CHAR_LIMIT);
   const audioBuffers: Buffer[] = [];
 
-  if (process.env.NODE_ENV !== 'production') {
-    console.log('Converting text to speech with options:', {
-      text,
-      voiceId,
-      audioFormat,
-      chunks: chunks.length,
-    });
-  }
-
   for (const chunk of chunks) {
     try {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('Sending chunk to Speechify API:', chunk);
-      }
+      // Log the payload for debugging
+      console.log('[Speechify] Sending payload:', {
+        input: chunk,
+        voiceId,
+        audioFormat,
+      });
       const response = await speechify.audioGenerate({
         input: chunk,
         voiceId,
@@ -64,9 +58,6 @@ export async function convertTextToSpeech(
       });
       const arrayBuffer = await response.audioData.arrayBuffer();
       audioBuffers.push(Buffer.from(arrayBuffer));
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('Chunk processed successfully');
-      }
     } catch (error) {
       console.error('Error processing chunk:', error);
       throw new Error(

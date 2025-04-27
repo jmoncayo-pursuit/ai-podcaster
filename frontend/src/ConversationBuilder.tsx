@@ -55,6 +55,11 @@ const ConversationBuilder: React.FC<ConversationBuilderProps> = ({
   );
   const playerRef = React.useRef<HTMLDivElement>(null);
 
+  const normalizeEmotion = (emotion: string | undefined) =>
+    emotion === 'None' ? '' : emotion || '';
+  const denormalizeEmotion = (emotion: string | undefined) =>
+    emotion === '' ? 'None' : emotion;
+
   useEffect(() => {
     if (initialTurns && initialTurns.length > 0) {
       const validatedTurns = initialTurns.map((turn) => {
@@ -73,7 +78,7 @@ const ConversationBuilder: React.FC<ConversationBuilderProps> = ({
             fallbackVoice?.id ||
             voices[0]?.id ||
             '',
-          emotion: turn.emotion || '',
+          emotion: normalizeEmotion(turn.emotion),
         };
       });
       setTurns(validatedTurns);
@@ -197,6 +202,7 @@ const ConversationBuilder: React.FC<ConversationBuilderProps> = ({
         turn.speaker.trim() ||
         voices.find((v) => v.id === turn.voiceId)?.label ||
         '',
+      emotion: denormalizeEmotion(turn.emotion),
     }));
     try {
       const res = await fetch(apiUrl, {
@@ -276,7 +282,7 @@ const ConversationBuilder: React.FC<ConversationBuilderProps> = ({
             <FormControl sx={{ minWidth: 100 }} size='small'>
               <InputLabel>Emotion</InputLabel>
               <Select
-                value={turn.emotion || ''}
+                value={normalizeEmotion(turn.emotion)}
                 label='Emotion'
                 onChange={(e) =>
                   handleTurnChange(idx, 'emotion', e.target.value)
