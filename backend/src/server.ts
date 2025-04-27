@@ -27,14 +27,20 @@ const handleTTS: RequestHandler = (req, res) => {
     return;
   }
 
-  // Prepare options without the 'input' property
+  // Always wrap text in SSML with direct emotion for single speaker mode
+  // Sanitize ellipses: replace ... with <break time="500ms"/> or a period
+  let sanitized = text.replace(/\.{3,}/g, '<break time="500ms"/>');
+  // Ensure each sentence ends with strong punctuation
+  sanitized = sanitized.replace(/([^.!?…])\s*$/gm, '$1.');
+  const ssml = `<speak><speechify:style emotion="direct">${sanitized}</speechify:style></speak>`;
+
   const options: Omit<TTSOptions, 'input'> = {
     voiceId,
     audioFormat,
   };
 
-  // Pass text as the first argument and options as the second
-  convertTextToSpeech(text, options)
+  // Pass SSML as the first argument and options as the second
+  convertTextToSpeech(ssml, options)
     .then((audioBuffer) => {
       res.set('Content-Type', 'audio/mpeg');
       res.send(audioBuffer);
@@ -73,23 +79,67 @@ const handleConversation: RequestHandler = async (req, res) => {
     }
   }
 
-  // If only one turn, stream TTS audio directly (no concat)
-  if (conversation.length === 1) {
+  // If only one unique voiceId, stream TTS audio directly (even if multiple turns)
+  const uniqueVoiceIds = Array.from(
+    new Set(conversation.map((t) => t.voiceId?.trim()))
+  );
+  if (uniqueVoiceIds.length === 1) {
     try {
-      const turn = conversation[0];
-      const options: Omit<TTSOptions, 'input'> = {
-        voiceId: turn.voiceId,
+      console.log(
+        '[TTS] Streaming single-voiceId multi-turn conversation as one SSML stream'
+      );
+      // Build SSML with emotion for each turn
+      const SUPPORTED_EMOTIONS = [
+        'angry',
+        'cheerful',
+        'sad',
+        'terrified',
+        'relaxed',
+        'fearful',
+        'assertive',
+        'energetic',
+        'warm',
+        'direct',
+        'bright',
+      ];
+      const DEFAULT_EMOTION = 'direct';
+      const sanitizeEllipses = (txt: string) =>
+        txt.replace(/\.{3,}/g, '<break time="500ms"/>');
+      const ssml =
+        `<speak>` +
+        conversation
+          .map((turn) => {
+            let text = sanitizeEllipses(turn.text.trim());
+            if (text && !/[.!?…]$/.test(text)) text += '.';
+            text = text.replace(/\s+/g, ' ');
+            if (
+              turn.emotion &&
+              SUPPORTED_EMOTIONS.includes(turn.emotion)
+            ) {
+              return `<speechify:style emotion="${turn.emotion}">${text}</speechify:style>`;
+            } else {
+              return `<speechify:style emotion="${DEFAULT_EMOTION}">${text}</speechify:style>`;
+            }
+          })
+          .join(' ') +
+        `</speak>`;
+      // Log the generated SSML for debugging
+      console.log('[TTS] Generated SSML:', ssml);
+      const options = {
+        voiceId: uniqueVoiceIds[0],
         audioFormat: audioFormat || 'mp3',
       };
-      // Use Speechify's official streaming endpoint
       await require('./speechify').streamTextToSpeech(
-        turn.text,
+        ssml,
         options,
         res
       );
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
-      console.error('Error streaming single-turn TTS:', msg);
+      console.error(
+        'Error streaming single-voiceId multi-turn TTS:',
+        msg
+      );
       if (!res.headersSent) res.status(500).json({ error: msg });
     }
     return;
