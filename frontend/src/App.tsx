@@ -1,18 +1,16 @@
 import React, { useRef, useState } from 'react';
-import {
-  Box,
-  Button,
-  Container,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-  Alert,
-  Grid,
-  Paper,
-} from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Container from '@mui/material/Container';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Typography from '@mui/material/Typography';
+import Alert from '@mui/material/Alert';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import FemaleIcon from '@mui/icons-material/Female';

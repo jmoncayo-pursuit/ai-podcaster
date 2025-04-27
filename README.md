@@ -138,9 +138,20 @@ curl -X POST http://localhost:3001/api/conversation \
 
 - Requires Node.js & TypeScript
 - Do not commit your `.env` file or API keys
-- CLI/script usage has been removed; project is now API and web app only
 - Expandable for more podcast features
 
 ## Reference
 
 - [Speechify API Docs](https://docs.speechify.com/)
+
+## Local Development (Run Both Servers Together)
+
+To start both the backend and frontend dev servers at once, from the project root:
+
+```sh
+npm install
+npm run dev
+```
+
+- This uses the root-level script with [concurrently](https://www.npmjs.com/package/concurrently) to run both servers in parallel.
+- The backend will run on http://localhost:3001 and the frontend on http://localhost:5173.
