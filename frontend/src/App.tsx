@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, Suspense, lazy } from 'react';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import { ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -19,7 +19,6 @@ import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
 
 // Internal components
-import ConversationBuilder from './ConversationBuilder';
 import CustomLoader from './CustomLoader';
 
 // Styles and theme
@@ -27,7 +26,11 @@ import darkTheme from './theme';
 
 // Assets
 import Icon192 from './assets/icon assets/android-chrome-192x192.png';
-import { VOICES } from './voices'; // Import shared voices
+import { VOICES } from './voices';
+
+const ConversationBuilder = lazy(
+  () => import('./ConversationBuilder')
+);
 
 // Define the ConversationTurn interface to match what's used in ConversationBuilder
 interface ConversationTurn {
@@ -167,13 +170,17 @@ function AppContent() {
               alignItems='center'
               justifyContent='center'
               mb={2}
+              sx={{ backgroundColor: '#23262F', borderRadius: 6 }}
             >
               <img
+                srcSet='/src/assets/icon assets/android-chrome-192x192.webp 1x, /src/assets/icon assets/android-chrome-192x192.png 1x'
                 src={Icon192}
                 alt='AI Podcaster logo'
                 width={48}
                 height={48}
                 style={{ marginRight: 12 }}
+                loading='lazy'
+                fetchPriority='high'
               />
               <Typography
                 variant='h3'
@@ -254,9 +261,7 @@ function AppContent() {
                     onChange={(e) =>
                       setAiTurns(Number(e.target.value))
                     }
-                    InputProps={{
-                      inputProps: { min: 2, max: 20 },
-                    }}
+                    inputProps={{ min: 2, max: 20 }}
                     sx={{ width: 120 }}
                   />
                   <TextField
@@ -266,9 +271,7 @@ function AppContent() {
                     onChange={(e) =>
                       setAiSpeakers(Number(e.target.value))
                     }
-                    InputProps={{
-                      inputProps: { min: 1, max: 10 },
-                    }}
+                    inputProps={{ min: 1, max: 10 }}
                     sx={{ width: 120 }}
                   />
                   <TextField
@@ -278,9 +281,7 @@ function AppContent() {
                     onChange={(e) =>
                       setAiLength(Number(e.target.value))
                     }
-                    InputProps={{
-                      inputProps: { min: 100, max: 2000 },
-                    }}
+                    inputProps={{ min: 100, max: 2000 }}
                     sx={{ width: 160 }}
                   />
                 </Box>
@@ -732,20 +733,24 @@ function AppContent() {
               </Box>
             )}
             {mode === 'conversation' && (
-              <ConversationBuilder
-                voices={VOICES}
-                apiUrl={conversationApiUrl}
-                initialTurns={
-                  aiConversation.length > 0
-                    ? aiConversation.map((turn) => ({
-                        speaker: turn.speaker,
-                        text: turn.text,
-                        voiceId: turn.voiceId,
-                        emotion: turn.emotion || '',
-                      }))
-                    : undefined
-                }
-              />
+              <Suspense
+                fallback={<div>Loading conversation builder...</div>}
+              >
+                <ConversationBuilder
+                  voices={VOICES}
+                  apiUrl={conversationApiUrl}
+                  initialTurns={
+                    aiConversation.length > 0
+                      ? aiConversation.map((turn) => ({
+                          speaker: turn.speaker,
+                          text: turn.text,
+                          voiceId: turn.voiceId,
+                          emotion: turn.emotion || '',
+                        }))
+                      : undefined
+                  }
+                />
+              </Suspense>
             )}
           </Paper>
         </Container>
