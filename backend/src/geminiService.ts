@@ -38,7 +38,7 @@ export async function generateAIConversation(
     throw new Error('Gemini API key not set');
   }
 
-  const { turns = 4, speakers = 2, length = 600 } = options;
+  const { turns = 4, speakers = 2, length = 500 } = options;
 
   const emotionList = EMOTIONS.join(', ');
   const voiceIdList = VOICES.map((v) => v.id).join(', ');
@@ -52,7 +52,7 @@ Requirements:
 - Length limit: ${length} characters total.
 - For each turn, set an appropriate emotion from this finite list: [${emotionList}] or use 'None' for neutral sentences, and include it as an 'emotion' field. The 'emotion' field must always be present and set to either a valid emotion or 'None'. Do not omit the 'emotion' field for any turn.
 - For each speaker, assign a unique speaker name and a valid voiceId from this finite list: [${voiceIdList}]. Only use these values for voiceId. Use a different voiceId for each speaker if possible.
-- Do NOT create any conversation turn where the text is only '...'. If a pause or hesitation is needed, use natural language (e.g., "Well, I don't know" or "Um, maybe"), or use a single ellipsis at most once per turn, and never at the end of a turn. Prefer complete sentences and avoid ellipses at the end of a turn.
+- Do NOT use ellipses ("..." or "…") in any turn. Do not use ellipses for pauses, hesitation, or dramatic effect. Always write complete sentences with proper punctuation. If a pause is needed, use natural language (e.g., "Well, I don't know" or "Um, maybe"), but never use ellipses.
 - Output as a JSON array of objects: [{speaker, text, voiceId, emotion}].
 - Example output:
 [
@@ -82,40 +82,69 @@ Requirements:
   const defaultVoiceId = VOICES[0]?.id || 'lisa';
 
   // Helper: get gender for a voiceId
-  const getVoiceGender = (voiceId: string) => VOICES.find(v => v.id === voiceId)?.gender || 'unknown';
+  const getVoiceGender = (voiceId: string) =>
+    VOICES.find((v) => v.id === voiceId)?.gender || 'unknown';
   // Helper: get a random name for a gender, avoiding used names
   function getRandomName(gender: string, usedNames: Set<string>) {
-    const candidates = VOICES.filter(v => v.gender === gender && !usedNames.has(v.label));
+    const candidates = VOICES.filter(
+      (v) => v.gender === gender && !usedNames.has(v.label)
+    );
     if (candidates.length === 0) return null;
-    return candidates[Math.floor(Math.random() * candidates.length)].label;
+    return candidates[Math.floor(Math.random() * candidates.length)]
+      .label;
   }
   // Helper: get a random voiceId for a gender, avoiding used voiceIds
-  function getRandomVoiceId(gender: string, usedVoiceIds: Set<string>) {
-    const candidates = VOICES.filter(v => v.gender === gender && !usedVoiceIds.has(v.id));
+  function getRandomVoiceId(
+    gender: string,
+    usedVoiceIds: Set<string>
+  ) {
+    const candidates = VOICES.filter(
+      (v) => v.gender === gender && !usedVoiceIds.has(v.id)
+    );
     if (candidates.length === 0) return null;
-    return candidates[Math.floor(Math.random() * candidates.length)].id;
+    return candidates[Math.floor(Math.random() * candidates.length)]
+      .id;
   }
 
   // Track used names/voices for better distribution
   const usedNames = new Set<string>();
   const usedVoiceIds = new Set<string>();
 
-  conversation = conversation.map((turn) => {
-    // Validate emotion and voiceId
-    let emotion = validEmotions.has(turn.emotion) ? turn.emotion : 'None';
-    let voiceId = validVoiceIds.has(turn.voiceId) ? turn.voiceId : defaultVoiceId;
-    let speaker = turn.speaker;
-    const voiceGender = getVoiceGender(voiceId);
-    // If speaker name doesn't match voice gender, pick a random name of correct gender
-    const nameGender = VOICES.find(v => v.label.toLowerCase() === speaker.trim().toLowerCase())?.gender;
-    if (!nameGender || nameGender !== voiceGender) {
-      const newName = getRandomName(voiceGender, usedNames);
-      if (newName) speaker = newName;
-    }
-    usedNames.add(speaker);
-    usedVoiceIds.add(voiceId);
-    return { ...turn, emotion, voiceId, speaker };
-  });
+  // Enforce correct number of unique speakers if user requested only 1
+  let speakerCount = options.speakers || 2;
+  let singleSpeakerName: string | null = null;
+  let singleSpeakerVoiceId: string | null = null;
+  if (speakerCount === 1 && conversation.length > 0) {
+    // Use the first speaker name and voiceId as the canonical ones
+    singleSpeakerName = conversation[0].speaker;
+    singleSpeakerVoiceId = conversation[0].voiceId;
+    conversation = conversation.map((turn) => ({
+      ...turn,
+      speaker: singleSpeakerName ?? '',
+      voiceId: singleSpeakerVoiceId ?? '',
+    }));
+  } else {
+    conversation = conversation.map((turn) => {
+      let emotion = validEmotions.has(turn.emotion)
+        ? turn.emotion
+        : 'None';
+      let voiceId = validVoiceIds.has(turn.voiceId)
+        ? turn.voiceId
+        : defaultVoiceId;
+      let speaker = turn.speaker;
+      const voiceGender = getVoiceGender(voiceId);
+      const nameGender = VOICES.find(
+        (v) => v.label.toLowerCase() === speaker.trim().toLowerCase()
+      )?.gender;
+      if (!nameGender || nameGender !== voiceGender) {
+        const newName = getRandomName(voiceGender, usedNames);
+        if (newName) speaker = newName;
+      }
+      usedNames.add(speaker);
+      usedVoiceIds.add(voiceId);
+      return { ...turn, emotion, voiceId, speaker };
+    });
+  }
 
   // Shuffle speakers/voices for more even distribution if possible
   // (Optional: can be improved further for round-robin)
@@ -125,6 +154,12 @@ Requirements:
       'Failed to generate valid conversation structure'
     );
   }
+
+  // Remove ellipses as a failsafe (after all other processing)
+  conversation = conversation.map((turn) => ({
+    ...turn,
+    text: turn.text.replace(/(\.{3,}|…)/g, ''),
+  }));
 
   return conversation;
 }
