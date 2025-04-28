@@ -45,13 +45,24 @@ const FORMATS = [
   { id: 'wav', label: 'WAV' },
 ];
 
-// API base URL logic using environment variables
-const apiHost = import.meta.env.VITE_API_HOST || 'localhost';
-const apiPort = import.meta.env.VITE_API_PORT || '3001';
-const apiBase =
-  apiPort === '443'
+// Dynamically determine API base URL for local dev and production
+const getApiBase = () => {
+  // If running on localhost, use the same host/port as frontend
+  if (
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1'
+  ) {
+    return `${window.location.protocol}//${window.location.hostname}:3001`;
+  }
+  // Otherwise, use env vars or fallback
+  const apiHost =
+    import.meta.env.VITE_API_HOST || window.location.hostname;
+  const apiPort = import.meta.env.VITE_API_PORT || '443';
+  return apiPort === '443'
     ? `https://${apiHost}`
     : `http://${apiHost}:${apiPort}`;
+};
+const apiBase = getApiBase();
 const apiUrl = `${apiBase}/api/tts`;
 const conversationApiUrl = `${apiBase}/api/conversation`;
 const aiConversationApiUrl = `${apiBase}/api/ai-conversation`;
@@ -172,16 +183,20 @@ function AppContent() {
               mb={2}
               sx={{ backgroundColor: '#23262F', borderRadius: 6 }}
             >
-              <img
-                srcSet='/src/assets/icon assets/android-chrome-192x192.webp 1x, /src/assets/icon assets/android-chrome-192x192.png 1x'
-                src={Icon192}
-                alt='AI Podcaster logo'
-                width={48}
-                height={48}
-                style={{ marginRight: 12 }}
-                loading='lazy'
-                fetchPriority='high'
-              />
+              <picture>
+                <source
+                  srcSet='/src/assets/icon assets/android-chrome-192x192.webp'
+                  type='image/webp'
+                />
+                <img
+                  src={Icon192}
+                  alt='AI Podcaster logo'
+                  width={48}
+                  height={48}
+                  style={{ marginRight: 12 }}
+                  loading='lazy'
+                />
+              </picture>
               <Typography
                 variant='h3'
                 align='center'

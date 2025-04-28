@@ -123,6 +123,49 @@ Requirements:
       speaker: singleSpeakerName ?? '',
       voiceId: singleSpeakerVoiceId ?? '',
     }));
+  } else if (speakerCount > 1 && conversation.length > 0) {
+    // Remap all speakers/voiceIds to only the requested number, round-robin
+    // 1. Collect unique (speaker, voiceId) pairs in order of appearance
+    const uniquePairs: { speaker: string; voiceId: string }[] = [];
+    const seen = new Set<string>();
+    for (const turn of conversation) {
+      const key = `${turn.speaker}|${turn.voiceId}`;
+      if (!seen.has(key)) {
+        uniquePairs.push({
+          speaker: turn.speaker,
+          voiceId: turn.voiceId,
+        });
+        seen.add(key);
+      }
+    }
+    // 2. Select up to speakerCount unique pairs, or fill with valid voices if not enough
+    let allowedPairs = uniquePairs.slice(0, speakerCount);
+    if (allowedPairs.length < speakerCount) {
+      // Fill with additional voices if needed
+      const usedVoiceIds = new Set(
+        allowedPairs.map((p) => p.voiceId)
+      );
+      for (const v of VOICES) {
+        if (allowedPairs.length >= speakerCount) break;
+        if (!usedVoiceIds.has(v.id)) {
+          allowedPairs.push({ speaker: v.label, voiceId: v.id });
+          usedVoiceIds.add(v.id);
+        }
+      }
+    }
+    // 3. Remap all turns to these allowed pairs in round-robin order
+    conversation = conversation.map((turn, idx) => {
+      const pair = allowedPairs[idx % speakerCount];
+      let emotion = validEmotions.has(turn.emotion)
+        ? turn.emotion
+        : 'None';
+      let text = turn.text;
+      let voiceId = validVoiceIds.has(pair.voiceId)
+        ? pair.voiceId
+        : defaultVoiceId;
+      let speaker = pair.speaker;
+      return { ...turn, emotion, text, voiceId, speaker };
+    });
   } else {
     conversation = conversation.map((turn) => {
       let emotion = validEmotions.has(turn.emotion)
