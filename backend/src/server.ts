@@ -47,9 +47,7 @@ const handleTTS: RequestHandler = (req, res) => {
   }
 
   // Always wrap text in SSML with direct emotion for single speaker mode
-  // Sanitize ellipses: replace ... with <break time="500ms"/> or a period
   let sanitized = text.replace(/\.{3,}/g, '<break time="500ms"/>');
-  // Ensure each sentence ends with strong punctuation
   sanitized = sanitized.replace(/([^.!?…])\s*$/gm, '$1.');
   const ssml = `<speak><speechify:style emotion="direct">${sanitized}</speechify:style></speak>`;
 
@@ -58,16 +56,8 @@ const handleTTS: RequestHandler = (req, res) => {
     audioFormat,
   };
 
-  // Pass SSML as the first argument and options as the second
-  convertTextToSpeech(ssml, options)
-    .then((audioBuffer) => {
-      res.set('Content-Type', 'audio/mpeg');
-      res.send(audioBuffer);
-    })
-    .catch((e: unknown) => {
-      const msg = e instanceof Error ? e.message : String(e);
-      res.status(500).json({ error: msg });
-    });
+  // Use streaming for single-speaker TTS
+  require('./speechify').streamTextToSpeech(ssml, options, res);
 };
 
 const handleConversation: RequestHandler = async (req, res) => {
