@@ -18,7 +18,17 @@ const PORT = process.env.PORT ? Number(process.env.PORT) : 3002;
 // Improved CORS: allow any localhost port and set header explicitly
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  if (origin && /^http:\/\/localhost:\d+$/.test(origin)) {
+  const allowedOrigins = [
+    'https://ai-podcaster-speechify.netlify.app',
+    /^http:\/\/localhost:\d+$/,
+  ];
+  if (
+    origin &&
+    (allowedOrigins.includes(origin) ||
+      allowedOrigins.some(
+        (o) => o instanceof RegExp && o.test(origin)
+      ))
+  ) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader(
