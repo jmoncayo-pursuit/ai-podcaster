@@ -47,17 +47,16 @@ const FORMATS = [
 
 // Dynamically determine API base URL for local dev and production
 const getApiBase = () => {
-  // If running on localhost, use the same host/port as frontend
+  // Use VITE_API_PORT if set, otherwise default to 3002
+  const apiPort = import.meta.env.VITE_API_PORT || '3002';
   if (
     window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1'
   ) {
-    return `${window.location.protocol}//${window.location.hostname}:3001`;
+    return `${window.location.protocol}//${window.location.hostname}:${apiPort}`;
   }
-  // Otherwise, use env vars or fallback
   const apiHost =
     import.meta.env.VITE_API_HOST || window.location.hostname;
-  const apiPort = import.meta.env.VITE_API_PORT || '443';
   return apiPort === '443'
     ? `https://${apiHost}`
     : `http://${apiHost}:${apiPort}`;

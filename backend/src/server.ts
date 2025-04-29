@@ -13,7 +13,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3002;
 
 // Improved CORS: allow any localhost port and set header explicitly
 app.use((req, res, next) => {
@@ -208,8 +208,21 @@ app.post('/api/tts', handleTTS);
 app.post('/api/conversation', handleConversation);
 app.post('/api/ai-conversation', handleAIConversation);
 
-app.listen(PORT, () => {
-  console.log(`TTS API server listening on http://localhost:${PORT}`);
-});
+app
+  .listen(PORT, () => {
+    console.log(
+      `TTS API server listening on http://localhost:${PORT}`
+    );
+  })
+  .on('error', (err) => {
+    if ((err as NodeJS.ErrnoException).code === 'EADDRINUSE') {
+      console.error(
+        `\n[ERROR] Port ${PORT} is already in use. Please set a different PORT in your .env file or stop the other process using this port.\n`
+      );
+      process.exit(1);
+    } else {
+      throw err;
+    }
+  });
 
 export default app;

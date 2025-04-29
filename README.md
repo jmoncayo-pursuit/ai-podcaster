@@ -155,3 +155,13 @@ npm run dev
 
 - This uses the root-level script with [concurrently](https://www.npmjs.com/package/concurrently) to run both servers in parallel.
 - The backend will run on http://localhost:3001 and the frontend on http://localhost:5173.
+
+## Backend Port Configuration
+
+By default, the backend runs on port **3002**. You can change this by setting the `PORT` variable in your `backend/.env` file:
+
+```env
+PORT=3002
+```
+
+If port 3002 is already in use, the server will warn you and exit. Set a different `PORT` in your `.env` file if needed.
